@@ -1,11 +1,11 @@
 import React, {useEffect} from 'react';
 
 const App = () => {
-    const CLIENT_ID: string = "c7f48b569016462994b5569c76ef7c5b"
-    const REDIRECT_URI: string = "http://localhost:3000/callback"
-    const AUTH_ENDPOINT: string = "https://accounts.spotify.com/authorize"
-    const RESPONSE_TYPE: string = "token"
-    const [token, setToken] = React.useState<string>("")
+    const CLIENT_ID: string = "c7f48b569016462994b5569c76ef7c5b";
+    const REDIRECT_URI: string = "http://localhost:3000/callback";
+    const AUTH_ENDPOINT: string = "https://accounts.spotify.com/authorize";
+    const RESPONSE_TYPE: string = "token";
+    const [token, setToken] = React.useState<string>("");
     useEffect(() => {
         const hash = window.location.hash
         let token = window.localStorage.getItem("token")
