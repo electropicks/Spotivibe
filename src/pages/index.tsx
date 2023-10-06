@@ -1,13 +1,11 @@
-import type {NextPage} from 'next'
-import {signIn} from 'next-auth/react'
-import {Button} from "@mui/joy";
-import Link from "next/link";
+import React, { useEffect } from "react";
+import Router from 'next/router'
 
-const Home: NextPage = () => {
-    return (
-        <Link href="/api/auth/signin">
-            <Button>Sign in</Button>
-        </Link>
-    )
+export default () => {
+    useEffect(() => {
+        const {pathname} = Router
+        if (pathname == '/') {
+            Router.push('/home')
+        }
+    });
 }
-export default Home
