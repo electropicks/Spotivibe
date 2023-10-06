@@ -12,10 +12,14 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/inter": "^5.0.12",
+    "@mui/icons-material": "^5.14.12",
     "@mui/joy": "^5.0.0-beta.8",
+    "@mui/material": "^5.14.12",
     "@vercel/analytics": "^1.0.2",
+    "axios": "^1.5.1",
     "next": "13.5.4",
     "next-auth": "^4.23.2",
+    "prettier": "^3.0.3",
     "react": "^18",
     "react-dom": "^18"
   },
@@ -23,7 +27,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "eslint": "^8",
+    "eslint": "^8.50.0",
     "eslint-config-next": "13.5.4",
     "typescript": "^5"
   }

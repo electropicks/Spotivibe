@@ -1,25 +1,9 @@
-import Head from "next/head";
-import { useRouter } from "next/router";
+import type { ReactNode } from "react"
 
-interface IProps {
-    children: any;
-    title: string;
-}
-
-export default function Layout({ children, title }: IProps) {
-    const router = useRouter();
-
+export default function Layout({ children }: { children: ReactNode }) {
     return (
         <>
-            <Head>
-                <title>{title}</title>
-            </Head>
-            <section
-                className={`w-full ${router.pathname === "/login" ? "" : "p-4"}`}
-            >
-                {children}
-            </section>
+            <main>{children}</main>
         </>
-    );
+    )
 }
-

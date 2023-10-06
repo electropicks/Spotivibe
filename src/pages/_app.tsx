@@ -1,18 +1,29 @@
-import type { ReactElement, ReactNode } from 'react'
-import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
+import {SessionProvider} from "next-auth/react"
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-    getLayout?: (page: ReactElement) => ReactNode
-}
+import type {AppProps} from "next/app"
+import type {Session} from "next-auth"
+import Head from "next/head"
+import {CssVarsProvider} from "@mui/joy/styles"
+import Sheet from "@mui/joy/Sheet"
 
-type AppPropsWithLayout = AppProps & {
-    Component: NextPageWithLayout
-}
-
-export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
-    // Use the layout defined at the page level, if available
-    const getLayout = Component.getLayout ?? ((page) => page)
-
-    return getLayout(<Component {...pageProps} />)
+// Use of the <SessionProvider> is mandatory to allow components that call
+// `useSession()` anywhere in your application to access the `session` object.
+export default function App({
+                                Component,
+                                pageProps: {session, ...pageProps},
+                            }: AppProps<{ session: Session }>) {
+    return (
+        <>
+            <Head>
+                <title>Spotivibe</title>
+                <link rel="icon" href="/favicon.ico" sizes="any" />
+                <meta name="viewport" content="initial-scale=1, width=device-width"/>
+            </Head>
+            <CssVarsProvider>
+                <SessionProvider session={session}>
+                    <Component {...pageProps} />
+                </SessionProvider>
+            </CssVarsProvider>
+        </>
+    )
 }
