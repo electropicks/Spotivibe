@@ -11,7 +11,6 @@ export default function RootLayout({
                                    }: {
     children: React.ReactNode
 }) {
-    const indicatorPlacement = "top";
     return (
         <html lang="en">
         <body>

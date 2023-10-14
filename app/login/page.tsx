@@ -30,7 +30,6 @@ export default function Login() {
     }, []);
 
     const handleSignIn = async () => {
-        console.log(location.origin);
         await supabase.auth.signInWithOAuth({
             provider: 'spotify',
             options: {

@@ -8,8 +8,6 @@ export default async function Home() {
         data: { session },
     } = await supabase.auth.getSession();
 
-    console.log(session?.user);
-
     if (session) {
         console.log("Redirecting to home");
         redirect("/home");
