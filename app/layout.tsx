@@ -1,4 +1,5 @@
 import {CssVarsProvider} from '@mui/joy/styles'
+import customTheme from "@/lib/theme";
 
 export const metadata = {
     title: 'Spotivibe',
@@ -15,7 +16,7 @@ export default function RootLayout({
         <html lang="en">
         <body>
         <main>
-            <CssVarsProvider>
+            <CssVarsProvider theme={customTheme}>
                 {children}
             </CssVarsProvider>
         </main>
