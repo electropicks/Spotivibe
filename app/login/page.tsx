@@ -12,24 +12,11 @@ import {Session} from "@supabase/supabase-js";
 export default function Login() {
     const supabase = createClientComponentClient<Database>()
     const router = useRouter()
-    const [session, setSession] = useState<Session | null>(null);
-    const [user, setUser] = useState<User | null>(null);
     const scope =
         "user-read-recently-played user-read-playback-state user-top-read user-modify-playback-state user-read-currently-playing user-follow-read playlist-read-private user-read-email user-read-private user-library-read playlist-read-collaborative";
 
-    useEffect(() => {
-        const { data: authListener } = supabase.auth.onAuthStateChange(
-            (event, session) => {
-                setSession(session);
-                setUser(session?.user ?? null);
-            }
-        );
-        return () => {
-            authListener.subscription?.unsubscribe();
-        };
-    }, []);
-
     const handleSignIn = async () => {
+        console.log("Signing in");
         await supabase.auth.signInWithOAuth({
             provider: 'spotify',
             options: {
