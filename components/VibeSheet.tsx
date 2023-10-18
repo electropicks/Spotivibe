@@ -10,7 +10,7 @@ const categories = [
     {label: "Danceability", key: "danceability"},
     {label: "Energy", key: "energy"},
     {label: "Instrumentalness", key: "instrumentalness"},
-    {label: "Valence", key: "valence"},
+    {label: "Happy", key: "valence"},
 ];
 
 export default function VibeSheet({averageVibes}: ProgressBarsProps) {
