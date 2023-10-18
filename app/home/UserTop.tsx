@@ -9,10 +9,12 @@ import {getTopArtistsResponse} from "@/lib/spotify.types";
 import {getAverageVibes, getTrackFeatures, serializeTrackIds} from "@/lib/utils";
 import {createClientComponentClient} from "@supabase/auth-helpers-nextjs";
 import {AverageVibesObject, VibedTrack} from "@/lib/vibe.types";
-import VibeSheet from "@/components/VibeSheet";
+import VibeSheet from "./VibeSheet";
+import {useRouter} from "next/navigation";
 
 export default function UserTop({provider_token}: { provider_token: string }) {
-    const supabase = createClientComponentClient<Database>();
+    const router = useRouter();
+
     const [topTracks, setTopTracks] = useState<VibedTrack[]>([])
     const [averageVibes, setAverageVibes] = useState<AverageVibesObject>({} as AverageVibesObject)
     const [topArtists, setTopArtists] = useState<Artist[]>([])
@@ -29,8 +31,9 @@ export default function UserTop({provider_token}: { provider_token: string }) {
             method: 'GET',
             headers: headers,
         })
-        if (!response.ok) {
-            await supabase.auth.refreshSession();
+        if (response.status === 401) {
+            router.push('/login');
+            return;
         }
         const trackResponse = await response.json() as getTopTracksResponse
         const tracks = trackResponse.items;

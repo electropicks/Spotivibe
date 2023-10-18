@@ -117,3 +117,20 @@ export interface AudioFeaturesObject {
     uri: string;
     valence: number;
 }
+
+interface CategoryObject {
+    href: string;
+    icons: ImageObject[];
+    id: string;
+    name: string;
+}
+
+export interface CategoriesObject {
+    href: string;
+    limit: number;
+    next: string | null;
+    offset: number;
+    previous: string | null;
+    total: number;
+    items: CategoryObject[];
+}

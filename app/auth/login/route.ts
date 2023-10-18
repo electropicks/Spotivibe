@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const cookieStore = cookies()
     const supabase = createRouteHandlerClient<Database>({cookies: () => cookieStore})
 
-    const {data, error} = await supabase.auth.signInWithOAuth(
+    const {data} = await supabase.auth.signInWithOAuth(
         {
             provider: 'spotify',
             options: {
@@ -27,8 +27,6 @@ export async function GET(request: Request) {
             }
         }
     )
-    console.log(data)
-    console.log(error)
 
     const redirectURL = data.url!;
 

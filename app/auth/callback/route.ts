@@ -6,7 +6,6 @@ export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/'
-  console.log("Hey", code)
 
   if (code) {
     const cookieStore = cookies()
