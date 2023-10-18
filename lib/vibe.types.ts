@@ -8,6 +8,7 @@ export interface AverageVibesObject {
     acousticness: number;
     danceability: number;
     energy: number;
+    tempo: number;
     instrumentalness: number;
     liveness: number;
     valence: number;
