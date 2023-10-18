@@ -1,48 +1,27 @@
-import {Sheet, Slider, Table, Typography} from "@mui/joy";
-import {CssVarsProvider} from "@mui/joy/styles";
-import customTheme from "@/lib/theme";
+import {LinearProgress, Sheet, Stack, Typography} from "@mui/joy";
+import React from "react";
 
-export interface VibeSheetProps {
-    username: string;
+export interface ProgressBarsProps {
+    averageVibes: AverageVibes;
 }
 
-const MIN = 0;
-const MAX = 100;
-const defaultValue = 50;
-
 const categories = [
-    {label: "Upbeat"},
-    {label: "Elevator"},
-    {label: "Beachy"},
-    {label: "Sad"},
-    {label: "Dancing Music"},
-    {label: "Rock"},
-    {label: "Instrumental"},
+    {label: "Acousticness", key: "acousticness"},
+    {label: "Danceability", key: "danceability"},
+    {label: "Energy", key: "energy"},
+    {label: "Instrumentalness", key: "instrumentalness"},
+    {label: "Valence", key: "valence"},
 ];
 
-export default function VibeSheet({username}: VibeSheetProps) {
+export default function VibeSheet({averageVibes}: ProgressBarsProps) {
     return (
-        <CssVarsProvider theme={customTheme}>
-            <Sheet variant="soft" sx={{padding: 5, borderRadius: 25}}>
-                <Typography component="h1">Welcome, {username}</Typography>
-                <Table>
-                    <tbody>
-                    {categories.map((category, index) => (
-                        <tr key={index}>
-                            <td>
-                                <Typography component="h2">{category.label}</Typography>
-                                <Slider
-                                    valueLabelDisplay="auto"
-                                    defaultValue={defaultValue}
-                                    min={MIN}
-                                    max={MAX}
-                                />
-                            </td>
-                        </tr>
-                    ))}
-                    </tbody>
-                </Table>
-            </Sheet>
-        </CssVarsProvider>
+        <>
+            {categories.map((category, index) => (
+                <Stack sx={{p:1, m:2}} key={index}>
+                    <Typography component="h4">{category.label}</Typography>
+                    <LinearProgress determinate value={averageVibes[category.key]}/>
+                </Stack>
+            ))}
+        </>
     );
 }

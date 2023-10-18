@@ -1,11 +1,12 @@
 import {Table, Typography} from "@mui/joy";
 import {truncateString} from "@/lib/utils";
+import {ArtistObject} from "@/lib/spotify.types";
 
 interface TableProps {
-    data: getTopArtistsResponse;
+    artists: ArtistObject[];
 }
 
-const ArtistTable: React.FC<TableProps> = ({ data }) => {
+const ArtistTable = ({artists}: TableProps) => {
     return (
         <div>
             <Typography>Artists</Typography>
@@ -19,12 +20,12 @@ const ArtistTable: React.FC<TableProps> = ({ data }) => {
                 </tr>
                 </thead>
                 <tbody>
-                {data.items.map((item: ArtistObject, index: number) => (
+                {artists.map((artist: ArtistObject, index: number) => (
                     <tr key={index}>
-                        <td>{truncateString(item.name, 40)}</td>
-                        <td>{item.genres}</td>
-                        <td><img width={100} src={item.images[0].url ?? 'N/A'} alt='artist image' /></td>
-                        <td>{item.popularity}</td>
+                        <td>{truncateString(artist.name, 40)}</td>
+                        <td>{artist.genres}</td>
+                        <td><img width={100} src={artist.images[0].url ?? 'N/A'} alt='artist image' /></td>
+                        <td>{artist.popularity}</td>
                     </tr>
                 ))}
                 </tbody>

@@ -2,10 +2,10 @@ import {Table, Typography} from "@mui/joy";
 import {truncateString} from "@/lib/utils";
 
 interface TableProps {
-    data: getTopTracksResponse;
+    tracks: Track[];
 }
 
-const TrackTable: React.FC<TableProps> = ({ data }) => {
+const TrackTable = ({ tracks }: TableProps) => {
     return (
         <div>
             <Typography>Tracks</Typography>
@@ -19,12 +19,12 @@ const TrackTable: React.FC<TableProps> = ({ data }) => {
                 </tr>
                 </thead>
                 <tbody>
-                {data.items.map((item: TrackObject, index: number) => (
+                {tracks.map((track: Track, index: number) => (
                     <tr key={index}>
-                        <td>{truncateString(item.name, 40)}</td>
-                        <td>{item.artists[0].name}</td>
-                        <td>{item.album.name}</td>
-                        <td>{item.popularity}</td>
+                        <td>{truncateString(track.name, 40)}</td>
+                        <td>{track.artists[0].name}</td>
+                        <td>{track.album.name}</td>
+                        <td>{track.popularity}</td>
                     </tr>
                 ))}
                 </tbody>

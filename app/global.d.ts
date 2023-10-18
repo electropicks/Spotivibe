@@ -1,19 +1,24 @@
 import type {Database as DB} from "@/lib/database.types";
 import {
-    getTopTracksResponse as TopTrackRes,
-    getTopArtistsResponse as TopArtistRes,
-    ArtistObject as Artist,
-    TrackObject as Track,
-    AlbumObject as Album,
-    ImageObject as Image
+    getTopTracksResponse,
+    getTopArtistsResponse,
+    ArtistObject,
+    TrackObject,
+    AlbumObject,
+    ImageObject,
+    AudioFeaturesObject
 } from "@/lib/spotify.types";
+import {AverageVibesObject, VibedTrack as VibedTrackObject} from "@/lib/vibe.types";
 
 declare global {
     type Database = DB;
+    type VibedTrack = VibedTrackObject;
+    type AverageVibes = AverageVibesObject;
+    type AudioFeatures = AudioFeaturesObject;
     type getTopTracksResponse = TopTrackRes;
     type getTopArtistsResponse = TopArtistRes;
-    type ArtistObject = Artist;
-    type TrackObject = Track;
-    type AlbumObject = Album;
-    type ImageObject = Image;
+    type Artist = Artist;
+    type Track = TrackObject;
+    type Album = AlbumObject;
+    type Image = ImageObject;
 }

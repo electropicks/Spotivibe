@@ -9,7 +9,33 @@ export type Json =
 export interface Database {
   public: {
     Tables: {
-      [_ in never]: never
+      tracks: {
+        Row: {
+          album: string
+          artist: string
+          id: number
+          name: string
+          popularity: number
+          spotify_id: string
+        }
+        Insert: {
+          album?: string
+          artist?: string
+          id?: number
+          name?: string
+          popularity?: number
+          spotify_id?: string
+        }
+        Update: {
+          album?: string
+          artist?: string
+          id?: number
+          name?: string
+          popularity?: number
+          spotify_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
