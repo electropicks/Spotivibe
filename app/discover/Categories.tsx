@@ -48,7 +48,7 @@ export default function Categories({ provider_token }: { provider_token: string 
         }
 
         setCategories(allCategories);
-        setLoading(false);
+        setLoading(false)
     };
 
     return (

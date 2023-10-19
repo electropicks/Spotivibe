@@ -16,7 +16,7 @@ export default function RootLayout({
         <body>
         <main>
             <CssVarsProvider>
-                {children}
+                    {children}
             </CssVarsProvider>
         </main>
         </body>

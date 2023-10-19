@@ -7,10 +7,10 @@ import TrackTable from "@/components/TrackTable";
 import ArtistTable from "@/components/ArtistTable";
 import {getTopArtistsResponse} from "@/lib/spotify.types";
 import {getAverageVibes, getTrackFeatures, serializeTrackIds} from "@/lib/utils";
-import {createClientComponentClient} from "@supabase/auth-helpers-nextjs";
 import {AverageVibesObject, VibedTrack} from "@/lib/vibe.types";
 import VibeSheet from "./VibeSheet";
 import {useRouter} from "next/navigation";
+import {getArtistsFromSpotify, getTracksFromSpotify} from "@/app/actions/actions";
 
 export default function UserTop({provider_token}: { provider_token: string }) {
     const router = useRouter();
@@ -20,46 +20,22 @@ export default function UserTop({provider_token}: { provider_token: string }) {
     const [topArtists, setTopArtists] = useState<Artist[]>([])
     const [displayMode, setDisplayMode] = useState<'tracks' | 'artists' | null>(null)
 
-    const headers = new Headers();
-    headers.append('Authorization', `Bearer ${provider_token}`);
-    const params = new URLSearchParams();
-    params.append('limit', '50');
-    params.append('time_range', 'short_term');
     const getTracks = async () => {
-        const apiURL = `https://api.spotify.com/v1/me/top/tracks?${params.toString()}`;
-        const response = await fetch(apiURL, {
-            method: 'GET',
-            headers: headers,
-        })
-        if (response.status === 401) {
-            router.push('/login');
-            return;
-        }
-        const trackResponse = await response.json() as getTopTracksResponse
-        const tracks = trackResponse.items;
-        setDisplayMode('tracks')
-        const serializedTracks = serializeTrackIds(tracks);
-        const trackFeatures = await getTrackFeatures(provider_token!, serializedTracks);
-        const vibedTracks: VibedTrack[] = trackFeatures.map((features, index) => {
-            const track: Track = tracks[index];
-            return {
-                ...features,
-                ...track,
-            };
-        });
-        const averageVibes: AverageVibes = getAverageVibes(vibedTracks);
+        const vibedTracks = await getTracksFromSpotify(provider_token);
         setTopTracks(vibedTracks);
-        setAverageVibes(averageVibes);
+        setAverageVibes(getAverageVibes(vibedTracks));
+        setDisplayMode('tracks')
     }
 
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${provider_token}`);
+    const params = new URLSearchParams({
+        limit: '50',
+        time_range: 'short_term',
+    });
+
     const getArtists = async () => {
-        const apiURL = `https://api.spotify.com/v1/me/top/artists?${params.toString()}`;
-        const response = await fetch(apiURL, {
-            method: 'GET',
-            headers: headers,
-        })
-        const artistsResponse = await response.json() as getTopArtistsResponse
-        const artists = artistsResponse.items;
+        const artists = await getArtistsFromSpotify(provider_token);
         setTopArtists(artists);
         setDisplayMode('artists')
     }
