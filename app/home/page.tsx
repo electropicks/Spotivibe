@@ -29,7 +29,7 @@ export default async function Home() {
                     <Button>Discover</Button>
                 </Link>
             </Stack>
-            <UserTop provider_token={session!.provider_token!}/>
+            <UserTop />
         </>
     )
 }

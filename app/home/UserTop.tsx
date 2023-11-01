@@ -1,51 +1,68 @@
 'use client'
 
-import {Sheet} from "@mui/joy";
+import {Option, Select, Sheet, Typography} from "@mui/joy";
 import Button from "@mui/joy/Button";
 import {useState} from "react";
 import TrackTable from "@/components/TrackTable";
 import ArtistTable from "@/components/ArtistTable";
-import {getTopArtistsResponse} from "@/lib/spotify.types";
-import {getAverageVibes, getTrackFeatures, serializeTrackIds} from "@/lib/utils";
-import {AverageVibesObject, VibedTrack} from "@/lib/vibe.types";
-import VibeSheet from "./VibeSheet";
-import {useRouter} from "next/navigation";
-import {getArtistsFromSpotify, getTracksFromSpotify} from "@/app/actions/actions";
+import {getUserTopArtists, getUserTopTracks} from "@/app/actions/actions";
+import Stack from "@mui/joy/Stack";
 
-export default function UserTop({provider_token}: { provider_token: string }) {
-    const router = useRouter();
+enum TimeRange {
+    SHORT_TERM = 'short_term',
+    MEDIUM_TERM = 'medium_term',
+    LONG_TERM = 'long_term'
+}
 
-    const [topTracks, setTopTracks] = useState<VibedTrack[]>([])
-    const [averageVibes, setAverageVibes] = useState<AverageVibesObject>({} as AverageVibesObject)
+export default function UserTop() {
+    const [timeRange, setTimeRange] = useState<TimeRange>(TimeRange.MEDIUM_TERM)
+    const [topTracks, setTopTracks] = useState<Track[]>([])
     const [topArtists, setTopArtists] = useState<Artist[]>([])
     const [displayMode, setDisplayMode] = useState<'tracks' | 'artists' | null>(null)
 
     const getTracks = async () => {
-        const vibedTracks = await getTracksFromSpotify(provider_token);
-        setTopTracks(vibedTracks);
-        setAverageVibes(getAverageVibes(vibedTracks));
+        const topTracks: Track[] = await getUserTopTracks(50, timeRange);
+        setTopTracks(topTracks)
         setDisplayMode('tracks')
     }
 
-    const headers = new Headers();
-    headers.append('Authorization', `Bearer ${provider_token}`);
-    const params = new URLSearchParams({
-        limit: '50',
-        time_range: 'short_term',
-    });
-
     const getArtists = async () => {
-        const artists = await getArtistsFromSpotify(provider_token);
-        setTopArtists(artists);
+        const topArtists: Artist[] = await getUserTopArtists(50, timeRange);
+        setTopArtists(topArtists)
         setDisplayMode('artists')
     }
+
+    const handleChange = (
+        event: React.MouseEvent<Element, MouseEvent> | React.KeyboardEvent<Element> | React.FocusEvent<Element, Element> | null,
+        newValue: TimeRange | null
+    ) => {
+        // Check if the event is not null and prevent the default action
+        if (event) {
+            event.preventDefault();
+        }
+
+        // Assuming `newValue` is the new selected value you need.
+        // Make sure this matches how the new value is actually passed in your Select component's onChange event.
+        if (newValue !== null) {
+            setTimeRange(newValue);
+        }
+    };
+
 
     return (
         <>
             <Sheet sx={{borderRadius: 10, p: 3, m: 2}}>
-                <Button sx={{m: 1}} onClick={getTracks}>get tracks</Button>
-                <Button sx={{m: 1}} onClick={getArtists}>get artists</Button>
-                <VibeSheet averageVibes={averageVibes}/>
+                <Stack direction={'row'} spacing={2} justifyContent={'center'} alignItems={'center'}>
+                    <Button sx={{m: 1}} onClick={getTracks}>get tracks</Button>
+                    <Button sx={{m: 1}} onClick={getArtists}>get artists</Button>
+                    <Typography>time range</Typography>
+                    <Select defaultValue={timeRange} onChange={handleChange} sx={{ width: 150}}>
+                        <Option value={TimeRange.SHORT_TERM}>short term</Option>
+                        <Option value={TimeRange.MEDIUM_TERM}>medium term</Option>
+                        <Option value={TimeRange.LONG_TERM}>long term</Option>
+                    </Select>
+                </Stack>
+                {/*<VibeSheet averageVibes={averageVibes}/>*/}
                 {(displayMode && displayMode === 'tracks' && topTracks) ? <TrackTable tracks={topTracks}/> : null}
                 {(displayMode && displayMode === 'artists' && topArtists) ? <ArtistTable artists={topArtists}/> : null}
             </Sheet>
