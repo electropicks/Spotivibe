@@ -14,3 +14,17 @@ export interface AverageVibesObject {
     valence: number;
     [key: string]: number; // index signature
 }
+
+export interface SongVibesObject {
+    happy: number;
+    sad: number;
+    energetic: number;
+    calm: number;
+    romantic: number;
+    nostalgic: number;
+    angry: number;
+    inspirational: number;
+    uplifting: number;
+    party: number;
+    mysterious: number;
+}

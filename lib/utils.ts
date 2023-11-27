@@ -9,19 +9,6 @@ export const serializeTrackIds = (tracks: Track[]) => {
     return tracks.map((track) => track.id).join(',');
 }
 
-export const getTrackFeatures = async (token: string, ids: string) => {
-    const headers = new Headers();
-    headers.append('Authorization', `Bearer ${token}`);
-    const endpoint = `https://api.spotify.com/v1/audio-features?ids=${ids}`;
-    const response = await fetch(endpoint, {
-        method: 'GET',
-        headers,
-    })
-    const data = await response.json();
-    const audioFeatures = data.audio_features;
-    return audioFeatures as AudioFeatures[];
-}
-
 export const getAverageVibes = (topTracks: VibedTrack[]): AverageVibes => {
     const numTracks = topTracks.length;
     if (numTracks === 0) {
@@ -84,3 +71,4 @@ function mapTempoToPercentage(tempo: number, minTempo: number, maxTempo: number)
         return ((tempo - minTempo) / (maxTempo - minTempo)) * 100;
     }
 }
+
