@@ -72,6 +72,7 @@ export async function mergeTrackFeatures(tracks: Track[]) {
     }
     if (response.status === 400) {
         console.log(response)
+        redirect('/refresh')
     }
     const featuresResponse = await response.json();
     const trackFeatures = featuresResponse.audio_features as AudioFeatures[];
