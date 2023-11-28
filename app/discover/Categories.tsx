@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import { useRouter } from "next/navigation";
+import Header from "./header";
 
 export default function Categories({ provider_token }: { provider_token: string }) {
     const router = useRouter();
@@ -53,6 +54,9 @@ export default function Categories({ provider_token }: { provider_token: string 
 
     return (
         <>
+            <div className="header-container">
+                <Header />
+            </div>
             <Button onClick={getCategories} disabled={loading}>
                 Get Categories
             </Button>
