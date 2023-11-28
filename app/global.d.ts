@@ -3,7 +3,7 @@ import {
     TrackObject,
     AudioFeaturesObject, CategoriesObject
 } from "@/lib/spotify.types";
-import {AverageVibesObject, VibedTrack as VibedTrackObject} from "@/lib/vibe.types";
+import {AverageVibesObject, SongVibesObject, VibedTrack as VibedTrackObject} from "@/lib/vibe.types";
 
 declare global {
     type Database = DB;
@@ -15,4 +15,5 @@ declare global {
     type Category = CategoryObject;
     type Artist = Artist;
     type Track = TrackObject;
+    type SongVibes = SongVibesObject;
 }
