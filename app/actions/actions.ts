@@ -5,44 +5,141 @@ import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
 import {createServerActionClient} from "@supabase/auth-helpers-nextjs";
 import OpenAI from "openai";
-import {ThreadCreateParams} from "openai/resources/beta";
 import {serializeTrackIds} from "@/lib/utils";
+import {ChatCompletionMessageParam} from "openai/resources";
+import {VibedTrack} from "@/lib/vibe.types";
 
 const openai = new OpenAI();
 
-export async function getSongVibes(songTitle: string, songArtist: string) {
-    const assistantId = "asst_CmJ0Jv9E7T4BIFCIz8zqf1Tr";
-    // const assistant = await openai.beta.assistants.retrieve(assistantId);
-    const messages: ThreadCreateParams.Message[] = [{"role": "user", "content": songTitle + " by " + songArtist}];
-    let run = await openai.beta.threads.createAndRun({
-        assistant_id: assistantId,
-        thread: {
-            messages: messages
-        }
-    });
-    while (run.status !== "completed") {
-        await new Promise(r => setTimeout(r, 1000));
-        run = await openai.beta.threads.runs.retrieve(run.thread_id, run.id);
-        console.log(run.status)
-        if (run.status === "requires_action") {
-            const tool_call = run.required_action!.submit_tool_outputs.tool_calls[0];
-            await openai.beta.threads.runs.submitToolOutputs(run.thread_id, run.id, {
-                tool_outputs: [
-                    {
-                        tool_call_id: tool_call.id,
-                        output: "Songs Lyrics..."
-                    }
-                ]
-            })
+export async function getSongVibes(vibedTracks: VibedTrack[]) {
+    console.log("Analyzing", vibedTracks.length, "tracks");
 
+    let promptTokensUsed = 0;
+    let completionTokensUsed = 0;
+    let totalTokensUsed = 0;
+    let songsAnalyzed = 0;
+    // Function to process a single VibedTrack
+    async function processTrack(vibedTrack: VibedTrack) {
+        if (!vibedTrack.name || !vibedTrack.artists || vibedTrack.artists.length === 0) {
+            throw new Error("Track name or artist is missing");
+        }
+
+        // Constructing the message content with more detailed information
+        const trackInfo = {
+            name: vibedTrack.name.slice(0, 16) + "...",
+            artist: vibedTrack.artists[0].name.slice(0, 16) + "...",
+            album: vibedTrack.album.name.slice(0, 16) + "...",
+            acousticness: vibedTrack.acousticness,
+            danceability: vibedTrack.danceability,
+            energy: vibedTrack.energy,
+            liveness: vibedTrack.liveness,
+            loudness: vibedTrack.loudness,
+            tempo: vibedTrack.tempo,
+            valence: vibedTrack.valence,
+            mode: vibedTrack.mode,
+            instrumentalness: vibedTrack.instrumentalness,
+            time_signature: vibedTrack.time_signature,
+            key: vibedTrack.key,
+            popularity: vibedTrack.popularity,
+        };
+
+        // Message to send to GPT-3.5
+        const messages: ChatCompletionMessageParam[] = [
+            {
+                role: "system",
+                content: "Analyze songs' sentiments: happy," +
+                    " sad, energetic, calm, romantic, nostalgic," +
+                    " angry, inspirational, uplifting, party, mysterious." +
+                    " Score each 0-100 (int). Use provided song metadata." +
+                    " Return ONLY sentiment scores as a SIMPLE json with no tab or newlines."
+            },
+            {
+                role: "user",
+                content: `${JSON.stringify(trackInfo)}`
+            }
+        ];
+
+        let response = await openai.chat.completions.create({
+            messages: messages,
+            model: "gpt-3.5-turbo-1106",
+            // model: "gpt-4-1106-preview",
+            response_format: {type: "json_object"},
+            max_tokens: 700,
+        });
+
+        promptTokensUsed += response.usage?.prompt_tokens ?? 0;
+        completionTokensUsed += response.usage?.completion_tokens ?? 0;
+        totalTokensUsed += response.usage?.total_tokens ?? 0;
+        songsAnalyzed += 1;
+        console.log("Prompt tokens used:", promptTokensUsed);
+        console.log("Completion tokens used:", completionTokensUsed);
+        console.log("Total tokens used:", totalTokensUsed);
+        console.log("Songs analyzed:", songsAnalyzed);
+
+        // console.log(response.choices[0].message);
+        if (response.choices && response.choices.length > 0 && response.choices[0].message.content!) {
+            return {
+                ...JSON.parse(response.choices[0].message.content!),
+                artist: vibedTrack.artists[0],
+                name: vibedTrack.name,
+                spotify_id: vibedTrack.id,
+            } as SongVibes;
+        } else {
+            throw new Error("No response from GPT");
         }
     }
-    const newMessages= (await openai.beta.threads.messages.list(run.thread_id)).getPaginatedItems();
-    console.log(newMessages);
-    console.table(newMessages);
-    console.log(newMessages[0].content);
-    console.log(newMessages[1].content);
+    //     return {
+    //         happy: 0,
+    //         sad: 0,
+    //         energetic: 0,
+    //         calm: 0,
+    //         romantic: 0,
+    //         nostalgic: 0,
+    //         angry: 0,
+    //         inspirational: 0,
+    //         uplifting: 0,
+    //         party: 0,
+    //         mysterious: 0,
+    //         name: "name",
+    //         artist: "artist",
+    //         spotify_id: "spotify_id",
+    //         genre: "genre"
+    //     }
+    //
+    console.log("Processing tracks")
+    // Run all track processing in parallel
+    const trackVibesPromises = vibedTracks.map(track => processTrack(track));
+    console.log("Waiting for tracks to be processed");
+    const trackVibes = await Promise.all(trackVibesPromises) as SongVibes[];
+    console.log("Successfully analyzed", trackVibes.length, "tracks");
+    return trackVibes;
 }
+
+export async function pruneCachedSongs(tracks: VibedTrack[]) {
+    console.log("Pruning cached songs from list of tracks");
+    const supabase = createServerActionClient<Database>({cookies: () => cookies()});
+
+    // Creating an array of spotify_ids from the tracks
+    const spotifyIds = tracks.map(track => track.id);
+
+    // Using a single query to get all the cached songs corresponding to the tracks
+    const { data: filteredSongs, error } = await supabase
+        .from('song_vibes')
+        .select('spotify_id')
+        .in('spotify_id', spotifyIds);  // Filtering based on spotify_ids
+
+    if (error) {
+        console.error("Error fetching cached songs:", error);
+        throw error;
+    }
+
+    const uncachedTracks = tracks.filter(track => !filteredSongs.some(song => song.spotify_id === track.id));
+
+    console.log("Uncached tracks:", uncachedTracks.length);
+
+    return uncachedTracks;
+}
+
 
 export async function getSpotifyToken() {
     const supabase = createServerActionClient<Database>({cookies: () => cookies()});
@@ -58,6 +155,7 @@ export async function getSpotifyToken() {
 }
 
 export async function mergeTrackFeatures(tracks: Track[]) {
+    console.log("Merging track features");
     const {providerToken} = await getSpotifyToken();
     const trackIds = serializeTrackIds(tracks);
     const headers = new Headers();
@@ -99,6 +197,7 @@ export async function mergeTrackFeatures(tracks: Track[]) {
 }
 
 export async function getUserTopTracks(limit: number, time_range: string) {
+    console.log("Getting top tracks");
     const {providerToken} = await getSpotifyToken();
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${providerToken}`);
@@ -124,6 +223,7 @@ export async function getUserTopTracks(limit: number, time_range: string) {
 }
 
 export async function getUserTopArtists(limit: number, time_range: string) {
+    console.log("Getting top artists");
     const {providerToken} = await getSpotifyToken();
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${providerToken}`);
@@ -149,6 +249,10 @@ export async function getUserTopArtists(limit: number, time_range: string) {
 }
 
 export async function addSongsToTable(songs: VibedTrack[]) {
+    if (songs.length === 0) {
+        return;
+    }
+    console.log("Adding songs to table");
     const supabase = createServerActionClient<Database>({cookies: () => cookies()});
 
     // Insert into song_features and retrieve inserted ids
@@ -182,10 +286,10 @@ export async function addSongsToTable(songs: VibedTrack[]) {
     }
 
     // Prepare song data with song_features_id
-    const songsData = songs.map(song => {
+    const songDataUpload= songs.map(song => {
         const featureId = featuresData.find(f => f.spotify_id === song.id)?.id;
         return {
-            title: song.name, // Assuming 'name' is the title of the song in VibedTrack
+            name: song.name,
             artist: song.artists[0].name, // Assuming the first artist's name
             album: song.album.name, // Assuming 'album' has a 'name' property
             song_features_id: featureId,
@@ -196,14 +300,50 @@ export async function addSongsToTable(songs: VibedTrack[]) {
     // Insert into song
     const { error: error2 } = await supabase
         .from('song')
-        .upsert(songsData, { onConflict: 'spotify_id' });
+        .upsert(songDataUpload, { onConflict: 'spotify_id' })
 
     if (error2) {
         console.error(error2);
         // Handle error - consider rolling back song_features insertion if necessary
     }
 
+    console.log("Successfully added songs to table");
+
     return featuresData; // or appropriate return value
 }
 
+export async function addSongVibesToTable(songs: (SongVibes)[]) {
+    if (songs.length === 0) {
+        return;
+    }
+    console.log("Adding song vibes to table");
+    const supabase = createServerActionClient<Database>({cookies: () => cookies()});
+    const { data: songsData, error: songsError } = await supabase
+        .from('song')
+        .select('id, spotify_id');
 
+    // Add song analysis to song_vibes table
+    const { error } = await supabase
+        .from('song_vibes')
+        .upsert(songs.map(song => ({
+            name: song.name,
+            spotify_id: song.spotify_id,
+            happy: song.happy,
+            sad: song.sad,
+            energetic: song.energetic,
+            calm: song.calm,
+            romantic: song.romantic,
+            nostalgic: song.nostalgic,
+            angry: song.angry,
+            inspirational: song.inspirational,
+            uplifting: song.uplifting,
+            party: song.party,
+            mysterious: song.mysterious,
+            genre: song.genre
+        })), { onConflict: 'spotify_id' });
+
+    if (error) {
+        console.error(error);
+    }
+    console.log("Successfully added song vibes to table");
+}
