@@ -8,9 +8,8 @@ import ArtistTable from "@/components/ArtistTable";
 import {
     addSongsToTable,
     getSongVibes,
-    getSpotifyToken,
     getUserTopArtists,
-    getUserTopTracks, mergeTrackFeatures
+    getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs
 } from "@/app/actions/actions";
 import Stack from "@mui/joy/Stack";
 
@@ -25,16 +24,28 @@ export default function UserTop() {
     const [topTracks, setTopTracks] = useState<Track[]>([])
     const [topArtists, setTopArtists] = useState<Artist[]>([])
     const [vibedTracks, setVibedTracks] = useState<Track[]>([])
+    const [songVibes, setSongVibes] = useState<SongVibes[]>([]);
     const [displayMode, setDisplayMode] = useState<'tracks' | 'artists' | null>(null)
 
     const getTracks = async () => {
         const topTracks: Track[] = await getUserTopTracks(50, timeRange);
-        setTopTracks(topTracks)
-        setDisplayMode('tracks')
+        setTopTracks(topTracks);
+        setDisplayMode('tracks');
         const mergedTracks = await getVibedTracks(topTracks);
-        setVibedTracks(mergedTracks)
-        // await getSongVibes(topTracks[0].name, topTracks[0].artists[0].name);
+        setVibedTracks(mergedTracks);
+        const tracksToAnalyze = await pruneCachedSongs(mergedTracks);
+        const songVibes = await getSongVibes(tracksToAnalyze);
+        console.log("Setting song vibes");
+        setSongVibes(songVibes);
+        console.log("Adding songs to table")
         await addSongsToTable(mergedTracks);
+        await addSongVibesToTable(songVibes);
+        console.log("Calling backfill")
+        // const res = await fetch('/backfill');
+        // console.log("Got response");
+        // const data = await res.json();
+        // console.log(data);
+        console.log("Done");
     }
 
     const getVibedTracks = async (tracks: Track[]) => {
