@@ -17,6 +17,7 @@ declare global {
     type GetTopTracksResponse = getTopTracksResponse
     type Artist = Artist;
     type Track = TrackObject;
+    type Category = CategoriesObject;
     type SongVibes = SongVibesObject;
     type Playlist = GetPlaylistResponse;
     type PlaylistTrack = PlaylistTrackObject;
