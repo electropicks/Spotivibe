@@ -12,17 +12,28 @@ import {backOff} from "exponential-backoff";
 
 const openai = new OpenAI();
 
-export async function processNewSongs(tracks: Track[]) {
+export async function processSongs(tracks: Track[]) {
+    if (!tracks || tracks.length === 0) {
+        return [];
+    }
+    const supabase = createServerActionClient<Database>({cookies: () => cookies()});
     console.log("Processing", tracks.length, "songs")
     if (tracks.length === 0) {
         return [];
     }
     const vibedTracks = await mergeTrackFeatures(tracks);
-    const uncachedTracks = await pruneCachedSongs(vibedTracks);
-    const songVibes = await getSongVibes(uncachedTracks);
+    const [uncachedTracks, cachedTracks] = await pruneCachedSongs(vibedTracks);
+    const getVibesResponse = await supabase
+        .from('song_vibes')
+        .select('*')
+        .in('spotify_id', cachedTracks.map(track => track.id));
+    const cachedVibes = (getVibesResponse.data! ?? []) as SongVibes[];
+    console.log(cachedVibes.length, "cached vibes");
+    const uncachedVibes = await getSongVibes(uncachedTracks);
+    console.log(uncachedVibes.length, "uncached vibes")
     await addSongsToTable(uncachedTracks);
-    await addSongVibesToTable(songVibes);
-    return songVibes;
+    await addSongVibesToTable(uncachedVibes);
+    return [...uncachedVibes, ...cachedVibes];
 }
 
 export async function getSongVibes(vibedTracks: VibedTrack[]) {
@@ -147,10 +158,11 @@ export async function pruneCachedSongs(tracks: VibedTrack[]) {
     }
 
     const uncachedTracks = tracks.filter(track => !filteredSongs.some(song => song.spotify_id === track.id));
+    const cachedTracks = tracks.filter(track => filteredSongs.some(song => song.spotify_id === track.id));
 
     console.log("Uncached tracks:", uncachedTracks.length);
 
-    return uncachedTracks;
+    return [uncachedTracks, cachedTracks];
 }
 
 
@@ -186,7 +198,7 @@ export async function mergeTrackFeatures(tracks: Track[]) {
     }
     if (response.status === 400) {
         console.log(response)
-        redirect('/refresh')
+        redirect('/logout')
     }
     const featuresResponse = await response.json();
     const trackFeatures = featuresResponse.audio_features as AudioFeatures[];
@@ -272,6 +284,7 @@ export async function getPlaylistTracks(playlistId: string) {
     const {providerToken} = await getSpotifyToken();
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${providerToken}`);
+    console.log("Calling spotify api");
 
     const apiURL = `https://api.spotify.com/v1/playlists/${playlistId}`;
     const response = await fetch(apiURL, {
@@ -397,4 +410,48 @@ export async function addSongVibesToTable(songs: (SongVibes)[]) {
         console.error(error);
     }
     console.log("Successfully added song vibes to table");
+}
+
+export async function getAverageVibesForUser(userSongs: SongVibes[]): Promise<SongVibes> {
+    console.log("Calculating average vibes for user");
+    // average each vibe from the user's songs
+    const averageVibes = {
+        happy: 0,
+        sad: 0,
+        energetic: 0,
+        calm: 0,
+        romantic: 0,
+        nostalgic: 0,
+        angry: 0,
+        inspirational: 0,
+        uplifting: 0,
+        party: 0,
+        mysterious: 0,
+    } as SongVibes;
+    userSongs.forEach(song => {
+        averageVibes.happy += song.happy;
+        averageVibes.sad += song.sad;
+        averageVibes.energetic += song.energetic;
+        averageVibes.calm += song.calm;
+        averageVibes.romantic += song.romantic;
+        averageVibes.nostalgic += song.nostalgic;
+        averageVibes.angry += song.angry;
+        averageVibes.inspirational += song.inspirational;
+        averageVibes.uplifting += song.uplifting;
+        averageVibes.party += song.party;
+        averageVibes.mysterious += song.mysterious;
+    });
+    averageVibes.happy /= userSongs.length;
+    averageVibes.sad /= userSongs.length;
+    averageVibes.energetic /= userSongs.length;
+    averageVibes.calm /= userSongs.length;
+    averageVibes.romantic /= userSongs.length;
+    averageVibes.nostalgic /= userSongs.length;
+    averageVibes.angry /= userSongs.length;
+    averageVibes.inspirational /= userSongs.length;
+    averageVibes.uplifting /= userSongs.length;
+    averageVibes.party /= userSongs.length;
+    averageVibes.mysterious /= userSongs.length;
+    console.log("Average vibes:", averageVibes);
+    return averageVibes;
 }
