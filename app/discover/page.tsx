@@ -8,17 +8,6 @@ import "./discover.css"
 
 
 export default async function Discover() {
-    //const supabase = createServerComponentClient<Database>({cookies});
-    //const {data: {session}} = await supabase.auth.getSession();
-    // if (!session) {
-    //     redirect('/login')
-    // }
-    //<Categories provider_token={session!.provider_token!} />
-    // const [happyValue, setHappyValue] = useState<number>(50);
-    // const [sadValue, setSadValue] = useState<number>(50);
-    // const [angryValue, setAngryValue] = useState<number>(50);
-    // const [relaxValue, setRelaxValue] = useState<number>(50);
-
 
     return (
         <div className="App">
@@ -35,7 +24,6 @@ export default async function Discover() {
                 <input type="range" className="slider"></input>
                 </div>
                 <Grid container spacing={2}>
-                    {/*/>*/}
                 </Grid>
                 <div className="slide-text">
                     <h2>Sad:&nbsp;&nbsp;</h2>
