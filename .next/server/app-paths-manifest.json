@@ -1,9 +1,4 @@
 {
-  "/page": "app/page.js",
-  "/auth/signout/route": "app/auth/signout/route.js",
-  "/login/page": "app/login/page.js",
-  "/icon.svg/route": "app/icon.svg/route.js",
-  "/auth/login/route": "app/auth/login/route.js",
-  "/auth/callback/route": "app/auth/callback/route.js",
+  "/discover/page": "app/discover/page.js",
   "/home/page": "app/home/page.js"
 }

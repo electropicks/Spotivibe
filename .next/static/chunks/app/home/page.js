@@ -2335,7 +2335,7 @@ function __build_action__(action, args) {
   return (0,next_dist_client_app_call_server__WEBPACK_IMPORTED_MODULE_0__.callServer)(action.$$id, args)
 }
 
-/* __next_internal_action_entry_do_not_use__ {"f1c6cbb92824fa95f927337aa7f7a479be849dac":"addSongsToTable","4d10dd4de01d315c4ba5a10e7e54af011ef61855":"getSongVibes","a1c079c9318071833fc51db856a1ccf5a568bfcb":"mergeTrackFeatures","a7f2832ed9fb9c59d099dce997be8b62b0bff990":"pruneCachedSongs","887589c7c575b03737f159f482efd230975718a6":"addSongVibesToTable","1cb4e67c1052e7ab43054b8ba070803984cbe1b2":"getSpotifyToken","2534934e83740e4b26d03be522b4232e3b82a2b2":"getUserTopTracks","f186f180708ba898fe7f955f101b96b4f7d4e4ed":"getUserTopArtists"} */ 
+/* __next_internal_action_entry_do_not_use__ {"f186f180708ba898fe7f955f101b96b4f7d4e4ed":"getUserTopArtists","887589c7c575b03737f159f482efd230975718a6":"addSongVibesToTable","a1c079c9318071833fc51db856a1ccf5a568bfcb":"mergeTrackFeatures","a7f2832ed9fb9c59d099dce997be8b62b0bff990":"pruneCachedSongs","2534934e83740e4b26d03be522b4232e3b82a2b2":"getUserTopTracks","1cb4e67c1052e7ab43054b8ba070803984cbe1b2":"getSpotifyToken","f1c6cbb92824fa95f927337aa7f7a479be849dac":"addSongsToTable","4d10dd4de01d315c4ba5a10e7e54af011ef61855":"getSongVibes"} */ 
 
 var getSongVibes = (0,private_next_rsc_action_client_wrapper__WEBPACK_IMPORTED_MODULE_2__.createServerReference)("4d10dd4de01d315c4ba5a10e7e54af011ef61855");
 var pruneCachedSongs = (0,private_next_rsc_action_client_wrapper__WEBPACK_IMPORTED_MODULE_2__.createServerReference)("a7f2832ed9fb9c59d099dce997be8b62b0bff990");
