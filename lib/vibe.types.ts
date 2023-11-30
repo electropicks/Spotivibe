@@ -16,6 +16,7 @@ export interface AverageVibesObject {
 }
 
 export interface SongVibesObject {
+    [key: string]: any;
     name: string;
     artist: string;
     spotify_id: string;

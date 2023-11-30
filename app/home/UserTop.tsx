@@ -9,9 +9,10 @@ import {
     addSongsToTable,
     getSongVibes,
     getUserTopArtists,
-    getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs
+    getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
 } from "@/app/actions/actions";
 import Stack from "@mui/joy/Stack";
+import VibePieChart from "@/components/VibePieChart";
 
 enum TimeRange {
     SHORT_TERM = 'short_term',
@@ -24,7 +25,7 @@ export default function UserTop() {
     const [topTracks, setTopTracks] = useState<Track[]>([])
     const [topArtists, setTopArtists] = useState<Artist[]>([])
     const [vibedTracks, setVibedTracks] = useState<Track[]>([])
-    const [songVibes, setSongVibes] = useState<SongVibes[]>([]);
+    const [averageVibes, setAverageVibes] = useState<SongVibes[]>([])
     const [displayMode, setDisplayMode] = useState<'tracks' | 'artists' | null>(null)
     const [playlistId, setPlaylistId] = useState<string>('');
 
@@ -32,15 +33,16 @@ export default function UserTop() {
         const topTracks: Track[] = await getUserTopTracks(50, timeRange);
         setTopTracks(topTracks);
         setDisplayMode('tracks');
-        const mergedTracks = await getVibedTracks(topTracks);
-        setVibedTracks(mergedTracks);
-        const tracksToAnalyze = await pruneCachedSongs(mergedTracks);
-        const songVibes = await getSongVibes(tracksToAnalyze);
+        const songVibes = await processSongs(topTracks);
         console.log("Setting song vibes");
-        setSongVibes(songVibes);
         console.log("Adding songs to table")
-        await addSongsToTable(mergedTracks);
-        await addSongVibesToTable(songVibes);
+        console.log(songVibes);
+        const userAverageSongVibes: SongVibes = await getAverageVibesForUser(songVibes);
+        console.log("User average song vibes");
+        console.log(userAverageSongVibes);
+        setAverageVibes([userAverageSongVibes]);
+
+
         // console.log("Calling backfill")
         // const res = await fetch('/backfill');
         // const data = await res.json();
@@ -53,11 +55,6 @@ export default function UserTop() {
     const getPlaylist = async (playlistId: string) => {
         console.log("Fetching playlist");
         await fetch('/data-collection/playlists?playlist_id=' + playlistId);
-    }
-
-    const getVibedTracks = async (tracks: Track[]) => {
-        console.log("Getting track features");
-        return await mergeTrackFeatures(tracks);
     }
 
     const getArtists = async () => {
@@ -93,9 +90,9 @@ export default function UserTop() {
                 console.log("Playlist id: " + playlistId);
                 await getPlaylist(playlistId as string);
             }}>
-                <Stack direction='row' sx={{borderRadius: 10, p: 3, m: 2}}>
+                <Stack direction='row' sx={{ borderRadius: 10, p: 3, m: 2 }}>
                     {/* Ensure the input has a name attribute that matches the key used in formData.get */}
-                    <Input name='playlistId' placeholder='Enter playlist id'/>
+                    <Input name='playlistId' placeholder='Enter playlist id' />
                     <Button type='submit'>Submit</Button>
                 </Stack>
             </form>
@@ -110,7 +107,7 @@ export default function UserTop() {
                         <Option value={TimeRange.LONG_TERM}>long term</Option>
                     </Select>
                 </Stack>
-                {/*<VibeSheet averageVibes={averageVibes}/>*/}
+                <VibePieChart vibes={averageVibes}/>
                 {(displayMode && displayMode === 'tracks' && topTracks) ? <TrackTable tracks={topTracks}/> : null}
                 {(displayMode && displayMode === 'artists' && topArtists) ? <ArtistTable artists={topArtists}/> : null}
             </Sheet>
