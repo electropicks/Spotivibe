@@ -134,3 +134,67 @@ export interface CategoriesObject {
     total: number;
     items: CategoryObject[];
 }
+
+export interface GetPlaylistResponse {
+    collaborative: boolean;
+    description: string | null;
+    external_urls: {
+        spotify: string;
+    };
+    followers: {
+        href: string | null;
+        total: number;
+    };
+    href: string;
+    id: string;
+    images: Array<{
+        url: string;
+        height: number | null;
+        width: number | null;
+    }>;
+    name: string;
+    owner: {
+        external_urls: {
+            spotify: string;
+        };
+        followers: {
+            href: string | null;
+            total: number;
+        };
+        href: string;
+        id: string;
+        type: string;
+        uri: string;
+        display_name: string | null;
+    };
+    public: boolean | null;
+    snapshot_id: string;
+    tracks: {
+        href: string;
+        limit: number;
+        next: string | null;
+        offset: number;
+        previous: string | null;
+        total: number;
+        items: Array<PlaylistTrackObject>;
+    };
+}
+
+export interface PlaylistTrackObject {
+    added_at: string; // date-time
+    added_by: {
+        external_urls: {
+            spotify: string;
+        };
+        followers: {
+            href: string | null;
+            total: number;
+        };
+        href: string;
+        id: string;
+        type: string;
+        uri: string;
+    };
+    is_local: boolean;
+    track: TrackObject; // You need to define TrackObject and EpisodeObject based on your needs
+}

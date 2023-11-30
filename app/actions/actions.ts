@@ -8,8 +8,22 @@ import OpenAI from "openai";
 import {serializeTrackIds} from "@/lib/utils";
 import {ChatCompletionMessageParam} from "openai/resources";
 import {VibedTrack} from "@/lib/vibe.types";
+import {backOff} from "exponential-backoff";
 
 const openai = new OpenAI();
+
+export async function processNewSongs(tracks: Track[]) {
+    console.log("Processing", tracks.length, "songs")
+    if (tracks.length === 0) {
+        return [];
+    }
+    const vibedTracks = await mergeTrackFeatures(tracks);
+    const uncachedTracks = await pruneCachedSongs(vibedTracks);
+    const songVibes = await getSongVibes(uncachedTracks);
+    await addSongsToTable(uncachedTracks);
+    await addSongVibesToTable(songVibes);
+    return songVibes;
+}
 
 export async function getSongVibes(vibedTracks: VibedTrack[]) {
     console.log("Analyzing", vibedTracks.length, "tracks");
@@ -59,13 +73,27 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
             }
         ];
 
-        let response = await openai.chat.completions.create({
-            messages: messages,
-            model: "gpt-3.5-turbo-1106",
-            // model: "gpt-4-1106-preview",
-            response_format: {type: "json_object"},
-            max_tokens: 700,
-        });
+        let response;
+        try {
+            response = await backOff(() => openai.chat.completions.create({
+                messages: messages,
+                model: "gpt-3.5-turbo-1106",
+                response_format: {type: "json_object"},
+                max_tokens: 700,
+            }), {
+                numOfAttempts: 20, // Number of retry attempts
+                startingDelay: 2000, // Initial delay in milliseconds
+                timeMultiple: 2, // Multiplier for delay
+                delayFirstAttempt: false, // Whether to delay the first attempt
+                retry: (e, attemptNumber) => {
+                    console.log(`Retry attempt number: ${attemptNumber}`);
+                    return e.response?.status !== 200; // Retry only on rate limit errors
+                }
+            });
+        } catch (error) {
+            console.error('Error after retrying:', error);
+            throw error; // Rethrow the error if all retries fail
+        }
 
         promptTokensUsed += response.usage?.prompt_tokens ?? 0;
         completionTokensUsed += response.usage?.completion_tokens ?? 0;
@@ -88,24 +116,6 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
             throw new Error("No response from GPT");
         }
     }
-    //     return {
-    //         happy: 0,
-    //         sad: 0,
-    //         energetic: 0,
-    //         calm: 0,
-    //         romantic: 0,
-    //         nostalgic: 0,
-    //         angry: 0,
-    //         inspirational: 0,
-    //         uplifting: 0,
-    //         party: 0,
-    //         mysterious: 0,
-    //         name: "name",
-    //         artist: "artist",
-    //         spotify_id: "spotify_id",
-    //         genre: "genre"
-    //     }
-    //
     console.log("Processing tracks")
     // Run all track processing in parallel
     const trackVibesPromises = vibedTracks.map(track => processTrack(track));
@@ -116,6 +126,9 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
 }
 
 export async function pruneCachedSongs(tracks: VibedTrack[]) {
+    if (!tracks || tracks.length === 0) {
+        return [];
+    }
     console.log("Pruning cached songs from list of tracks");
     const supabase = createServerActionClient<Database>({cookies: () => cookies()});
 
@@ -155,6 +168,9 @@ export async function getSpotifyToken() {
 }
 
 export async function mergeTrackFeatures(tracks: Track[]) {
+    if (!tracks || tracks.length === 0) {
+        return [];
+    }
     console.log("Merging track features");
     const {providerToken} = await getSpotifyToken();
     const trackIds = serializeTrackIds(tracks);
@@ -217,7 +233,10 @@ export async function getUserTopTracks(limit: number, time_range: string) {
         console.log(response)
     }
 
-    const trackResponse = await response.json() as getTopTracksResponse
+    const trackResponse = await response.json() as GetTopTracksResponse;
+    if (!trackResponse.items) {
+        redirect('/refresh');
+    }
 
     return trackResponse.items as Track[];
 }
@@ -246,6 +265,38 @@ export async function getUserTopArtists(limit: number, time_range: string) {
 
     const artistsResponse = await response.json() as getTopArtistsResponse;
     return artistsResponse.items as Artist[];
+}
+
+export async function getPlaylistTracks(playlistId: string) {
+    console.log("Getting tracks from playlist with id", playlistId);
+    const {providerToken} = await getSpotifyToken();
+    const headers = new Headers();
+    headers.append('Authorization', `Bearer ${providerToken}`);
+
+    const apiURL = `https://api.spotify.com/v1/playlists/${playlistId}`;
+    const response = await fetch(apiURL, {
+        method: 'GET',
+        headers: headers,
+    })
+    if (response.status === 401) {
+        redirect('/login')
+    }
+    if (response.status === 400) {
+        console.log(response)
+    }
+    if (response.status === 404) {
+        throw new Error("Playlist with id " + playlistId + " not found")
+    }
+    if (response.status !== 200) {
+        console.log(response.status);
+        throw new Error("Error fetching playlist tracks");
+    }
+
+    const playlistResponse = await response.json() as Playlist;
+    const playlistTracks: PlaylistTrack[] = playlistResponse.tracks.items.map(item => item) as PlaylistTrack[];
+    const tracks: Track[] = playlistTracks.map(track => track.track);
+    console.log("Loaded", tracks.length, "tracks from playlist with id", playlistId);
+    return tracks;
 }
 
 export async function addSongsToTable(songs: VibedTrack[]) {

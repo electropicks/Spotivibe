@@ -1,0 +1,86 @@
+.App {
+text-align: center;
+font-family: "Helvetica Neue";
+background: linear-gradient(to right, #454845, #000000);
+/* text-color: #FFFFFF; */
+}
+    
+    .App-logo {
+height: 100 px;
+width: 100 px;
+pointer-events: none;
+    }
+    
+    .slide-text{
+color: white;
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 0.5em;
+margin: 0.5em;
+    }
+    .homeButton {
+    justify-content: right;
+    text-align: right;
+    }
+    
+    .head{
+/* text-color: white; */
+    display: flex;
+    align-items: center;
+    background: linear-gradient(to left, #9effa9, #48c46c);
+    color: white;
+    width: 100%;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .App-header {
+    display: flex;
+    align-items: center;
+    text-align: left;
+    justify-content: left;
+    font-size: calc(10px + 2vmin);
+    color: white;
+    }
+    
+    .button {
+    padding: 10px 20px;
+    margin: 2em;
+    height: 40px;
+    width: 80px;
+    background-color: #4ad272;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    }
+    
+    .App-link {
+    color: #61dafb;
+    }
+    
+    .box{
+    padding: 3em;
+    margin-top: 5em;
+    margin-bottom: 5em;
+    margin-left: 10em;
+    margin-right: 10em;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+    background-color: #090a0c;
+    border-radius : 35px;
+    color: white;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+    }
+    
+    .slider{
+    width: 65%;
+    height: 15px;
+    border-radius: 10px;
+    background: #9effa9;
+    color: #9effa9;
+    outline: none;
+    transition: background 0.2s;
+    }

@@ -1,11 +1,14 @@
 'use client'
 
-import { useState, useEffect } from "react";
+import {useState, useEffect} from "react";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
-import { useRouter } from "next/navigation";
+import {useRouter} from "next/navigation";
+import Header from "./header";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
 
-export default function Categories({ provider_token }: { provider_token: string }) {
+export default function Categories({provider_token}: { provider_token: string }) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
@@ -26,7 +29,7 @@ export default function Categories({ provider_token }: { provider_token: string 
             router.push('/login');
             return [];
         }
-        const { categories: data } = await response.json();
+        const {categories: data} = await response.json();
         return data;
     };
 
@@ -52,20 +55,42 @@ export default function Categories({ provider_token }: { provider_token: string 
     };
 
     return (
-        <>
-            <Button onClick={getCategories} disabled={loading}>
-                Get Categories
-            </Button>
-            <Typography typeof={'p'}>{}</Typography>
-            {loading ? (
-                <Typography typeof={'p'}>Loading...</Typography>
-            ) : (
-                categories?.map((category, index) => (
-                    <div key={index}>
-                        <Typography typeof={'p'}>{category.name}</Typography>
-                    </div>
-                ))
-            )}
-        </>
+        <div className="App">
+            <Header></Header>
+            <div className="box">
+                <h1>Recommendation Generator:</h1>
+                <h2>Enter the vibes of the playlist you would like our newest Artificial Intelligence to generate below,
+                    and click submit!</h2>
+            </div>
+
+            <Box className="box">
+                <div className="slide-text">
+                    <h2>Happy:&nbsp;&nbsp;</h2>
+                    <input type="range" className="slider"></input>
+                </div>
+                <Grid container spacing={2}>
+                    {/*/>*/}
+                </Grid>
+                <div className="slide-text">
+                    <h2>Sad:&nbsp;&nbsp;</h2>
+                    <input type="range" className="slider"></input>
+                </div>
+                <Grid container spacing={2}>
+                </Grid>
+                <div className="slide-text">
+                    <h2>Angry:&nbsp;&nbsp;</h2>
+                    <input type="range" className="slider"></input>
+                </div>
+                <Grid container spacing={2}>
+                </Grid>
+                <div className="slide-text">
+                    <h2>Relaxed:&nbsp;&nbsp;</h2>
+                    <input type="range" className="slider"></input>
+                </div>
+                <Grid container spacing={2}>
+                </Grid>
+            </Box>
+            {/*Button variant="contained" className="button" size="large">Submit</Button> */}
+        </div>
     );
 }
