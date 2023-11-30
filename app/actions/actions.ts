@@ -26,10 +26,9 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
 
         // Constructing the message content with more detailed information
         const trackInfo = {
-            name: vibedTrack.name,
-            artist: vibedTrack.artists.map(artist => artist.name).join(", "),
-            album: vibedTrack.album.name,
-            spotify_id: vibedTrack.id,
+            name: vibedTrack.name.slice(0, 16) + "...",
+            artist: vibedTrack.artists[0].name.slice(0, 16) + "...",
+            album: vibedTrack.album.name.slice(0, 16) + "...",
             acousticness: vibedTrack.acousticness,
             danceability: vibedTrack.danceability,
             energy: vibedTrack.energy,
@@ -51,7 +50,7 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
                 content: "Analyze songs' sentiments: happy," +
                     " sad, energetic, calm, romantic, nostalgic," +
                     " angry, inspirational, uplifting, party, mysterious." +
-                    " Score each 0-100. Use provided song metadata." +
+                    " Score each 0-100 (int). Use provided song metadata." +
                     " Return ONLY sentiment scores as a SIMPLE json with no tab or newlines."
             },
             {
@@ -62,8 +61,8 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
 
         let response = await openai.chat.completions.create({
             messages: messages,
-            // model: "gpt-3.5-turbo-1106",
-            model: "gpt-4-1106-preview",
+            model: "gpt-3.5-turbo-1106",
+            // model: "gpt-4-1106-preview",
             response_format: {type: "json_object"},
             max_tokens: 700,
         });
@@ -111,7 +110,6 @@ export async function getSongVibes(vibedTracks: VibedTrack[]) {
     // Run all track processing in parallel
     const trackVibesPromises = vibedTracks.map(track => processTrack(track));
     console.log("Waiting for tracks to be processed");
-    console.log(await trackVibesPromises[0]);
     const trackVibes = await Promise.all(trackVibesPromises) as SongVibes[];
     console.log("Successfully analyzed", trackVibes.length, "tracks");
     return trackVibes;

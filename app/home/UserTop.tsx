@@ -41,10 +41,10 @@ export default function UserTop() {
         await addSongsToTable(mergedTracks);
         await addSongVibesToTable(songVibes);
         console.log("Calling backfill")
-        // const res = await fetch('/backfill');
-        // console.log("Got response");
-        // const data = await res.json();
-        // console.log(data);
+        const res = await fetch('/backfill');
+        console.log("Got response");
+        const data = await res.json();
+        console.log(data);
         console.log("Done");
     }
 
