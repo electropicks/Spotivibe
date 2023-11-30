@@ -1,4 +1,5 @@
-import {CssVarsProvider} from '@mui/joy/styles'
+import {CssVarsProvider} from '@mui/joy/styles';
+import NavBar from '../components/NavBar';
 
 export const metadata = {
     title: 'Spotivibe',
@@ -14,9 +15,12 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body>
+        <div>
+            <NavBar/>
+        </div>
         <main>
             <CssVarsProvider>
-                    {children}
+                {children}
             </CssVarsProvider>
         </main>
         </body>

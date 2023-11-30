@@ -16,6 +16,9 @@ export interface AverageVibesObject {
 }
 
 export interface SongVibesObject {
+    name: string;
+    artist: string;
+    spotify_id: string;
     happy: number;
     sad: number;
     energetic: number;
@@ -27,4 +30,5 @@ export interface SongVibesObject {
     uplifting: number;
     party: number;
     mysterious: number;
+    genre: string;
 }

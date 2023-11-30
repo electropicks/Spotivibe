@@ -1,6 +1,6 @@
 'use client'
 
-import {Option, Select, Sheet, Typography} from "@mui/joy";
+import {Input, Option, Select, Sheet, Typography} from "@mui/joy";
 import Button from "@mui/joy/Button";
 import React, {useState} from "react";
 import TrackTable from "@/components/TrackTable";
@@ -8,9 +8,8 @@ import ArtistTable from "@/components/ArtistTable";
 import {
     addSongsToTable,
     getSongVibes,
-    getSpotifyToken,
     getUserTopArtists,
-    getUserTopTracks, mergeTrackFeatures
+    getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs
 } from "@/app/actions/actions";
 import Stack from "@mui/joy/Stack";
 
@@ -25,16 +24,35 @@ export default function UserTop() {
     const [topTracks, setTopTracks] = useState<Track[]>([])
     const [topArtists, setTopArtists] = useState<Artist[]>([])
     const [vibedTracks, setVibedTracks] = useState<Track[]>([])
+    const [songVibes, setSongVibes] = useState<SongVibes[]>([]);
     const [displayMode, setDisplayMode] = useState<'tracks' | 'artists' | null>(null)
+    const [playlistId, setPlaylistId] = useState<string>('');
 
     const getTracks = async () => {
         const topTracks: Track[] = await getUserTopTracks(50, timeRange);
-        setTopTracks(topTracks)
-        setDisplayMode('tracks')
+        setTopTracks(topTracks);
+        setDisplayMode('tracks');
         const mergedTracks = await getVibedTracks(topTracks);
-        setVibedTracks(mergedTracks)
-        // await getSongVibes(topTracks[0].name, topTracks[0].artists[0].name);
+        setVibedTracks(mergedTracks);
+        const tracksToAnalyze = await pruneCachedSongs(mergedTracks);
+        const songVibes = await getSongVibes(tracksToAnalyze);
+        console.log("Setting song vibes");
+        setSongVibes(songVibes);
+        console.log("Adding songs to table")
         await addSongsToTable(mergedTracks);
+        await addSongVibesToTable(songVibes);
+        // console.log("Calling backfill")
+        // const res = await fetch('/backfill');
+        // const data = await res.json();
+        // console.log(data);
+
+        // await fetch('/data_collection/playlist');
+
+        console.log("Done");
+    }
+    const getPlaylist = async (playlistId: string) => {
+        console.log("Fetching playlist");
+        await fetch('/data-collection/playlists?playlist_id=' + playlistId);
     }
 
     const getVibedTracks = async (tracks: Track[]) => {
@@ -67,6 +85,20 @@ export default function UserTop() {
 
     return (
         <>
+            <form onSubmit={async (event) => {
+                event.preventDefault();
+                const formData = new FormData(event.currentTarget);
+                const playlistId = formData.get('playlistId');
+                setPlaylistId(playlistId as string);
+                console.log("Playlist id: " + playlistId);
+                await getPlaylist(playlistId as string);
+            }}>
+                <Stack direction='row' sx={{borderRadius: 10, p: 3, m: 2}}>
+                    {/* Ensure the input has a name attribute that matches the key used in formData.get */}
+                    <Input name='playlistId' placeholder='Enter playlist id'/>
+                    <Button type='submit'>Submit</Button>
+                </Stack>
+            </form>
             <Sheet sx={{borderRadius: 10, p: 3, m: 2}}>
                 <Stack direction={'row'} spacing={2} justifyContent={'center'} alignItems={'center'}>
                     <Button sx={{m: 1}} onClick={getTracks}>get tracks</Button>
