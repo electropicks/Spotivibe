@@ -12,7 +12,7 @@ import {
     getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
 } from "@/app/actions/actions";
 import Stack from "@mui/joy/Stack";
-import VibeSlider from "@/components/VibeSlider";
+import VibePieChart from "@/components/VibePieChart";
 
 enum TimeRange {
     SHORT_TERM = 'short_term',
@@ -107,7 +107,7 @@ export default function UserTop() {
                         <Option value={TimeRange.LONG_TERM}>long term</Option>
                     </Select>
                 </Stack>
-                <VibeSlider vibes={averageVibes}/>
+                <VibePieChart vibes={averageVibes}/>
                 {(displayMode && displayMode === 'tracks' && topTracks) ? <TrackTable tracks={topTracks}/> : null}
                 {(displayMode && displayMode === 'artists' && topArtists) ? <ArtistTable artists={topArtists}/> : null}
             </Sheet>
