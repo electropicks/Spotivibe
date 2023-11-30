@@ -15,12 +15,12 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body>
-            <div>
-            <NavBar />
-            </div>
+        <div>
+            <NavBar/>
+        </div>
         <main>
             <CssVarsProvider>
-                    {children}
+                {children}
             </CssVarsProvider>
         </main>
         </body>

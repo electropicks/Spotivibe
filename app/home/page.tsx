@@ -1,4 +1,3 @@
-
 import {createServerComponentClient} from "@supabase/auth-helpers-nextjs";
 import {cookies} from "next/headers";
 import {redirect} from "next/navigation";
@@ -6,7 +5,6 @@ import UserTop from "./UserTop";
 import Stack from "@mui/joy/Stack";
 import Button from "@mui/joy/Button";
 import Link from "next/link";
-import * as React from 'react';
 
 export default async function Home() {
     const supabase = createServerComponentClient<Database>({cookies});
@@ -18,7 +16,7 @@ export default async function Home() {
 
     return (
         <>
-            {/* <Stack
+            <Stack
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
@@ -30,8 +28,8 @@ export default async function Home() {
                 <Link href={'/discover'}>
                     <Button>Discover</Button>
                 </Link>
-            </Stack> */}
+            </Stack>
             <UserTop />
-            </>
+        </>
     )
 }
