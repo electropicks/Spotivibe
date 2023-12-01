@@ -5,11 +5,21 @@ import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import { useRouter } from "next/navigation";
 import Header from "./header";
+import Grid from '@mui/material/Grid';
+//import React, {useState} from "react";
+import Box from '@mui/material/Box';
+import {getUserTopTracks} from "@/app/actions/actions";
+import TrackTable from "@/components/TrackTable";
 
 export default function Categories({ provider_token }: { provider_token: string }) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
+    const [happy, setHappy] = useState("50");
+    const [sad, setSad] = useState("50");
+    const [angry, setAngry] = useState("50");
+    const [relaxed, setRelaxed] = useState("50");
+    const [topTracks, setTopTracks] = useState<Track[]>([])
 
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${provider_token}`);
@@ -52,24 +62,52 @@ export default function Categories({ provider_token }: { provider_token: string 
         setLoading(false)
     };
 
+    const generatePlaylist = async() => {
+        const top: Track[] = await getUserTopTracks(50, 'medium_term');
+        setTopTracks(top);
+        return (<TrackTable tracks={topTracks}></TrackTable>);
+    }
+
+    function gen(){
+        return generatePlaylist();
+    }
+
     return (
-        <>
-            <div className="header-container">
-                <Header />
+        <div className="App">
+            <Header></Header>
+            <div className="box">
+                <h1>Recommendation Generator:</h1>
+                <h2>Enter the vibes of the playlist you would like our newest Artificial Intelligence to generate below,
+                    and click submit!</h2>
             </div>
-            <Button onClick={getCategories} disabled={loading}>
-                Get Categories
-            </Button>
-            <Typography typeof={'p'}>{}</Typography>
-            {loading ? (
-                <Typography typeof={'p'}>Loading...</Typography>
-            ) : (
-                categories?.map((category, index) => (
-                    <div key={index}>
-                        <Typography typeof={'p'}>{category.name}</Typography>
-                    </div>
-                ))
-            )}
-        </>
+
+            <Box className="box">
+                <div className="slide-text">
+                    <h2>Happy:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={happy} onChange={e => setHappy(e.target.value)}></input>
+                </div>
+                <Grid container spacing={2}>
+                </Grid>
+                <div className="slide-text">
+                    <h2>Sad:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={sad} onChange={e => setSad(e.target.value)}></input>
+                </div>
+                <Grid container spacing={2} >
+                </Grid>
+                <div className="slide-text">
+                    <h2>Angry:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={angry} onChange={e => setAngry(e.target.value)}></input>
+                </div>
+                <Grid container spacing={2} >
+                </Grid>
+                <div className="slide-text">
+                    <h2>Relaxed:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={relaxed} onChange={e => setRelaxed(e.target.value)}></input>
+                </div>
+                <Grid container spacing={2} >
+                </Grid>
+            </Box>
+            <Button className="button" onClick={gen}>Submit</Button>
+        </div>
     );
 }

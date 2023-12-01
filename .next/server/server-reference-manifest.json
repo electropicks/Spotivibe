@@ -1,5 +1,94 @@
 {
-  "node": {},
+  "node": {
+    "1bb33a745f1b540685f6c90fb158b80152066124": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "fb65970a3fe787cec806eb3e150bc79e0a3d998d": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "99abd1c8e3850ec6233f2a1a051fb1153642f877": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "fb46dfc966c01b173ebf37ee553701f0875d0293": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "d480c401f8398c8ceda781b3ff325414761bdeb8": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "81f55128f9727eac06e6c51d35b6ccb401c9eff6": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "c46c2e6f824a637f1101333dc8eb593939762fbd": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "2c3d7ad1ad5d6a30af654c5c83ab86b330d57c5c": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "8279a4e445f8e51e8acb68eadeb32916f5ff8d50": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "dfcef606c978202d54ebb4c454a40ab92e07483d": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    },
+    "b38bbe98f64bb4fe3413d3d932590a4afdfaa92d": {
+      "workers": {
+        "app/discover/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2Fmnt%2Fc%2FUsers%2Fcathe%2FSpotivibe%2Fapp%2Factions%2Factions.ts%22%2C%5B%22getAverageVibesForUser%22%2C%22addSongsToTable%22%2C%22getUserTopArtists%22%2C%22getSongVibes%22%2C%22mergeTrackFeatures%22%2C%22getUserTopTracks%22%2C%22getSpotifyToken%22%2C%22getPlaylistTracks%22%2C%22addSongVibesToTable%22%2C%22processSongs%22%2C%22pruneCachedSongs%22%5D%5D%5D&__client_imported__=true!"
+      },
+      "layer": {
+        "app/discover/page": "action-browser"
+      }
+    }
+  },
   "edge": {},
-  "encryptionKey": "epWNXUva4+mXN0ktNxVNBp5G3TtFtc52+vJiUu4Aepk="
+  "encryptionKey": "1rucNbjlHTVrAWL+Jm9fg5XVf10x7qCpknk0dtQvQ1M="
 }
