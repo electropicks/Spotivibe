@@ -21,4 +21,17 @@ declare global {
     type SongVibes = SongVibesObject;
     type Playlist = GetPlaylistResponse;
     type PlaylistTrack = PlaylistTrackObject;
+    enum Vibe {
+        angry = "angry",
+        calm = "calm",
+        energetic = "energetic",
+        happy = "happy",
+        inspirational = "inspirational",
+        mysterious = "mysterious",
+        nostalgic = "nostalgic",
+        party = "party",
+        romantic = "romantic",
+        sad = "sad",
+        uplifting = "uplifting",
+    }
 }
