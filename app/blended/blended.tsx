@@ -6,13 +6,15 @@ import Typography from "@mui/joy/Typography";
 import { useRouter } from "next/navigation";
 import Header from "../discover/header";
 
-export default function Categories({ provider_token }: { provider_token: string }) {
+export default function Categories(
+    //{ provider_token }: { provider_token: string }
+) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
 
     const headers = new Headers();
-    headers.append('Authorization', `Bearer ${provider_token}`);
+    //headers.append('Authorization', `Bearer ${provider_token}`);
     const params = new URLSearchParams();
     params.append('country', 'US');
     params.append('offset', '0');

@@ -8,20 +8,22 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Header from "../discover/header";
 import "../discover/discover.css";
-import Likert from 'likert-react';
+//import LikertScale from 'likert-react';
 
-export default function Categories({provider_token}: { provider_token: string }) {
+export default function Categories(
+    //{provider_token}: { provider_token: string }
+    ) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
     // Slider Parameters
-    const [happy, setHappy] = useState(50);
-    const [sad, setSad] = useState(50);
-    const [angry, setAngry] = useState(50);
-    const [calm, setCalm] = useState(50);
-    const [energetic, setEnergetic] = useState(50);
-    const [uplifting, setUplifting] = useState(50);
+    const [happy, setHappy] = useState("50");
+    const [sad, setSad] = useState("50");
+    const [angry, setAngry] = useState("50");
+    const [calm, setCalm] = useState("50");
+    const [energetic, setEnergetic] = useState("50");
+    const [uplifting, setUplifting] = useState("50");
 
     // Feedback Parameters
     const [happyRes, setHappyRes] = useState(3);
@@ -32,7 +34,7 @@ export default function Categories({provider_token}: { provider_token: string })
     const [upliftingRes, setUpliftingRes] = useState(3);
 
     const headers = new Headers();
-    headers.append('Authorization', `Bearer ${provider_token}`);
+    //headers.append('Authorization', `Bearer ${provider_token}`);
     const params = new URLSearchParams();
     params.append('country', 'US');
     params.append('offset', '0');
@@ -52,22 +54,17 @@ export default function Categories({provider_token}: { provider_token: string })
     };
 
     const likertScale = (type: string, change: (f : number)=>void) => {
-        const likertOptions = {
-            question: "How " + type + " did you find the playlist?",
-            responses: [
-                {value: 1, text: "Not " + type +  " enough"},
-                {value: 2, text: "Could be more " + type},
-                {value: 3, text: "Perfect", checked: true},
-                {value: 4, text: "A little too " + type},
-                {value: 5, text: "Way too " + type}
-            ],
-            onChange: (val: number) => {
-                change(val);
-            }
-        };
 
         return (
-            <Likert {...likertOptions} />
+            <form>
+                <p>How {type} did you find the playlist? </p>
+                <br />
+                <label><input type="radio" name="myRadio" value="1" onClick={() => change(1)}/> Not {type} Enough</label>
+                <label><input type="radio" name="myRadio" value="2" onClick={() => change(2)}/> Could be more {type}</label>
+                <label><input type="radio" name="myRadio" value="3" defaultChecked={true} onClick={() => change(3)}/> Perfect</label>
+                <label><input type="radio" name="myRadio" value="4" onClick={() => change(4)}/> A little too {type}</label>
+                <label><input type="radio" name="myRadio" value="5" onClick={() => change(5)}/> Way too {type} </label>
+            </form>
         )
     }
 

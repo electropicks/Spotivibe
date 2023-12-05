@@ -16,7 +16,9 @@ import {
     getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
 } from "@/app/actions/actions";
 
-export default function Categories({ provider_token }: { provider_token: string }) {
+export default function Categories(
+    //{ provider_token }: { provider_token: string }
+) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
@@ -34,7 +36,7 @@ export default function Categories({ provider_token }: { provider_token: string 
 
     const headers = new Headers();
     const [showPopup, setShowPopup] = useState(false);
-    headers.append('Authorization', `Bearer ${provider_token}`);
+    //headers.append('Authorization', `Bearer ${provider_token}`);
     const params = new URLSearchParams();
     params.append('country', 'US');
     params.append('offset', '0');

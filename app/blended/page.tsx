@@ -4,22 +4,24 @@ import Grid from '@mui/material/Grid';
 //import React, {useState} from "react";
 import Box from '@mui/material/Box';
 import Header from "../discover/header";
-import "../discover/discover.css"
+import "../discover/discover.css";
+import Categories from "./blended"
+import {redirect} from "next/navigation";
+import Stack from "@mui/joy/Stack";
+import Link from "next/link";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
 
 
 export default async function Discover() {
 
+    const supabase = createServerComponentClient<Database>({cookies});
+    const {data: {session}} = await supabase.auth.getSession();
+
+    if (!session) {
+        redirect('/login');
+    }
     return (
-        <div className="App">
-            <Header></Header>
-            <div className="box">
-                <h1>Blended Playlists:</h1>
-                <h2>Select two playlist and we will generate a new playlist for you that uses AI to find the
-                    best match up of the vibes of both playlists!</h2>
-            </div>
-            <Box className="box">
-                <p>Placeholder for Playlist selection however we choose to implement that!</p>
-            </Box>
-        </div>
-    );
+        <Categories></Categories>
+    )
 }
