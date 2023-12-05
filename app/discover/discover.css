@@ -9,8 +9,10 @@
 }
 
 .App-logo {
-    height: 40vmin;
+    height: 100px;
+    width: 100px;
     pointer-events: none;
+    display: flex;
 }
 
 .slide-text{

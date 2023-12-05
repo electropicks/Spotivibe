@@ -36,7 +36,7 @@ const NavBar: React.FC = () => {
                 </ListItem>
                 <ListDivider/>
                 <ListItem role="none">
-                    <ListItemButton role="menuitem" component="a" href="#horizontal-list">
+                    <ListItemButton role="menuitem" component="a" href={"/feedback"}>
                         Feedback
                     </ListItemButton>
                 </ListItem>
