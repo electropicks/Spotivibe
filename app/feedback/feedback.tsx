@@ -8,7 +8,7 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Header from "../discover/header";
 import "../discover/discover.css";
-import Likert from 'react-likert-scale';
+import Likert from 'likert-react';
 
 export default function Categories({provider_token}: { provider_token: string }) {
     const router = useRouter();
