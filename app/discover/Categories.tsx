@@ -1,19 +1,39 @@
 'use client'
 
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
-import {useRouter} from "next/navigation";
+import { useRouter } from "next/navigation";
 import Header from "./header";
-import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
+import Grid from '@mui/material/Grid';
+//import React, {useState} from "react";
+import Box from '@mui/material/Box';
+import TrackTable from "@/components/TrackTable";
+import {
+    addSongsToTable,
+    getSongVibes,
+    getUserTopArtists,
+    getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
+} from "@/app/actions/actions";
 
-export default function Categories({provider_token}: { provider_token: string }) {
+export default function Categories({ provider_token }: { provider_token: string }) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(false);
 
+    // Vibes for parameters
+    const [happy, setHappy] = useState("50");
+    const [sad, setSad] = useState("50");
+    const [angry, setAngry] = useState("50");
+    const [calm, setCalm] = useState("50");
+    const [energetic, setEnergetic] = useState("50");
+    const [uplifting, setUplifting] = useState("50");
+
+
+    const [topTracks, setTopTracks] = useState<Track[]>([])
+
     const headers = new Headers();
+    const [showPopup, setShowPopup] = useState(false);
     headers.append('Authorization', `Bearer ${provider_token}`);
     const params = new URLSearchParams();
     params.append('country', 'US');
@@ -29,7 +49,7 @@ export default function Categories({provider_token}: { provider_token: string })
             router.push('/login');
             return [];
         }
-        const {categories: data} = await response.json();
+        const { categories: data } = await response.json();
         return data;
     };
 
@@ -54,6 +74,44 @@ export default function Categories({provider_token}: { provider_token: string })
         setLoading(false)
     };
 
+    const generatePlaylist = async() => {
+        const top: Track[] = await getUserTopTracks(50, 'medium_term');
+        setTopTracks(top);
+        return (<TrackTable tracks={topTracks}></TrackTable>);
+    }
+
+    // PRIMARY FUNCTION THAT GENERATES AI PLAYLIST
+    const gen = async() => {
+        // Activates pop up that shows the results
+        setShowPopup(true);
+
+        // use getAverageVibesPerUser functions
+        // shown that the user likes from the user data
+        const topTracks: Track[] = await getUserTopTracks(50, 'medium');
+        setTopTracks(topTracks);
+        const songVibes = await processSongs(topTracks);
+        const userAverageSongVibes: SongVibes = await getAverageVibesForUser(songVibes);
+
+        // "Averages" the vibes put in through the sliders and the vibes
+        const avgHappy = happy;
+        const avgSad = sad;
+        const avgAngry = angry;
+        const avgCalm = calm;
+        const avgEnergetic = energetic;
+        const avgUplifting = uplifting;
+
+        // Generates playlist with a range from those given parameters
+        // E.X. avgHappy = .5, thus pull songs .4 - .6 happy etc
+
+        // Evaluates if playist is too long or too short,
+        // If its too long, tighten the range and try again
+        // If its too short, expand the range and try again
+
+        // Returns the playlist
+        // currently just uses the get track feature
+        return generatePlaylist();
+    }
+
     return (
         <div className="App">
             <Header></Header>
@@ -66,31 +124,42 @@ export default function Categories({provider_token}: { provider_token: string })
             <Box className="box">
                 <div className="slide-text">
                     <h2>Happy:&nbsp;&nbsp;</h2>
-                    <input type="range" className="slider"></input>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={happy} onChange={e => setHappy(e.target.value)}></input>
                 </div>
                 <Grid container spacing={2}>
-                    {/*/>*/}
                 </Grid>
                 <div className="slide-text">
                     <h2>Sad:&nbsp;&nbsp;</h2>
-                    <input type="range" className="slider"></input>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={sad} onChange={e => setSad(e.target.value)}></input>
                 </div>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} >
                 </Grid>
                 <div className="slide-text">
                     <h2>Angry:&nbsp;&nbsp;</h2>
-                    <input type="range" className="slider"></input>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={angry} onChange={e => setAngry(e.target.value)}></input>
                 </div>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} >
                 </Grid>
                 <div className="slide-text">
-                    <h2>Relaxed:&nbsp;&nbsp;</h2>
-                    <input type="range" className="slider"></input>
+                    <h2>Calm:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={calm} onChange={e => setCalm(e.target.value)}></input>
                 </div>
-                <Grid container spacing={2}>
+                <div className="slide-text">
+                    <h2>Energetic:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={energetic} onChange={e => setEnergetic(e.target.value)}></input>
+                </div>
+                <div className="slide-text">
+                    <h2>Uplifting:&nbsp;&nbsp;</h2>
+                    <input type="range" min="0" max="100" step="1" className="slider" value={uplifting} onChange={e => setUplifting(e.target.value)}></input>
+                </div>
+                <Grid container spacing={2} >
                 </Grid>
             </Box>
-            {/*Button variant="contained" className="button" size="large">Submit</Button> */}
+            <Button className="button" onClick={gen}>Submit</Button>
+            {showPopup &&
+                (<Box className="box" id="results">
+                    <h2>Show results here</h2>
+                </Box>)}
         </div>
     );
 }
