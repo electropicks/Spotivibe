@@ -1,66 +1,57 @@
 .App {
-text-align: center;
-font-family: "Helvetica Neue";
-background: linear-gradient(to right, #454845, #000000);
-/* text-color: #FFFFFF; */
+    text-align: center;
+    /*font-family: "Helvetica Neue";*/
+    background: linear-gradient(to right, #454845, #000000);
+    text-color: #FFFFFF;
+    /*justify-content: center;*/
+    /*align-content: center;*/
+    /*align-items: center;*/
 }
-    
-    .App-logo {
-height: 100 px;
-width: 100 px;
-pointer-events: none;
-    }
-    
-    .slide-text{
-color: white;
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 0.5em;
-margin: 0.5em;
-    }
-    .homeButton {
-    justify-content: right;
-    text-align: right;
-    }
-    
-    .head{
-/* text-color: white; */
-    display: flex;
-    align-items: center;
-    background: linear-gradient(to left, #9effa9, #48c46c);
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+.slide-text{
     color: white;
-    width: 100%;
-    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
-    }
-    
-    .App-header {
     display: flex;
+    justify-content: center;
     align-items: center;
+    padding: 0.5em;
+    margin: 0.5em;
+}
+
+.App-header {
+    background: linear-gradient(to left, #9effa9, #48c46c);
+    /*min-height: 100vh;*/
+    display: flex;
+    flex-direction: column;
+    /*align-items: first;*/
     text-align: left;
     justify-content: left;
     font-size: calc(10px + 2vmin);
     color: white;
-    }
-    
-    .button {
+    width: 100%;
+    box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+}
+
+.button {
     padding: 10px 20px;
     margin: 2em;
-    height: 40px;
-    width: 80px;
     background-color: #4ad272;
     color: #fff;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    }
-    
-    .App-link {
+}
+
+.App-link {
     color: #61dafb;
-    }
-    
-    .box{
+}
+
+.box{
     padding: 3em;
     margin-top: 5em;
     margin-bottom: 5em;
@@ -73,9 +64,9 @@ margin: 0.5em;
     border-radius : 35px;
     color: white;
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
-    }
-    
-    .slider{
+}
+
+.slider{
     width: 65%;
     height: 15px;
     border-radius: 10px;
@@ -83,4 +74,4 @@ margin: 0.5em;
     color: #9effa9;
     outline: none;
     transition: background 0.2s;
-    }
+}
