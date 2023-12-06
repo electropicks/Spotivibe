@@ -5,6 +5,8 @@ import Button from "@mui/joy/Button";
 import Typography from "@mui/joy/Typography";
 import { useRouter } from "next/navigation";
 import Header from "../discover/header";
+import Box from '@mui/material/Box';
+import "../discover/discover.css"
 
 export default function Categories(
     //{ provider_token }: { provider_token: string }
@@ -55,23 +57,16 @@ export default function Categories(
     };
 
     return (
-        <>
-            <div className="header-container">
-                <Header />
+        <div className="App">
+            <Header></Header>
+            <div className="box">
+                <h1>Blended Playlists:</h1>
+                <h2>Select two playlist and we will generate a new playlist for you that uses AI to find the
+                    best match up of the vibes of both playlists!</h2>
             </div>
-            <Button onClick={getCategories} disabled={loading}>
-                Get Categories
-            </Button>
-            <Typography typeof={'p'}>{}</Typography>
-            {loading ? (
-                <Typography typeof={'p'}>Loading...</Typography>
-            ) : (
-                categories?.map((category, index) => (
-                    <div key={index}>
-                        {/*<Typography typeof={'p'}>{category.name}</Typography>*/}
-                    </div>
-                ))
-            )}
-        </>
+            <Box className="box">
+                <p>Placeholder for Playlist selection however we choose to implement that!</p>
+            </Box>
+        </div>
     );
 }
