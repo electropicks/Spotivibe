@@ -28,7 +28,6 @@
     background: linear-gradient(to left, #9effa9, #48c46c);
     /*min-height: 100vh;*/
     display: flex;
-    flex-direction: column;
     /*align-items: first;*/
     text-align: left;
     justify-content: left;

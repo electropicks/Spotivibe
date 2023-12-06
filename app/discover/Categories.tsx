@@ -21,7 +21,8 @@ export default function Categories(
 ) {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false)
+    const [table, setTable] = useState(<></>);
 
     // Vibes for parameters
     const [happy, setHappy] = useState("50");
@@ -95,15 +96,18 @@ export default function Categories(
         const userAverageSongVibes: SongVibes = await getAverageVibesForUser(songVibes);
 
         // "Averages" the vibes put in through the sliders and the vibes
-        const avgHappy = happy;
-        const avgSad = sad;
-        const avgAngry = angry;
-        const avgCalm = calm;
-        const avgEnergetic = energetic;
-        const avgUplifting = uplifting;
+        const avgHappy = (parseInt(happy) + userAverageSongVibes.happy) / 2;
+        const avgSad = (parseInt(sad) + userAverageSongVibes.sad) / 2;;
+        const avgAngry = (parseInt(angry) + userAverageSongVibes.angry) / 2;;
+        const avgCalm = (parseInt(calm) + userAverageSongVibes.calm) / 2;;
+        const avgEnergetic = (parseInt(energetic) + userAverageSongVibes.energetic) / 2;;
+        const avgUplifting = (parseInt(uplifting) + userAverageSongVibes.uplifting) / 2;;
+        const taable = await generatePlaylist();
+        setTable(taable);
 
         // Generates playlist with a range from those given parameters
         // E.X. avgHappy = .5, thus pull songs .4 - .6 happy etc
+
 
         // Evaluates if playist is too long or too short,
         // If its too long, tighten the range and try again
@@ -111,7 +115,7 @@ export default function Categories(
 
         // Returns the playlist
         // currently just uses the get track feature
-        return generatePlaylist();
+        return;
     }
 
     return (
@@ -161,6 +165,7 @@ export default function Categories(
             {showPopup &&
                 (<Box className="box" id="results">
                     <h2>Show results here</h2>
+                    {table}
                 </Box>)}
         </div>
     );
