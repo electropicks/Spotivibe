@@ -18,10 +18,14 @@ energetic: number, uplifting: number){
     // Call to spotify API to get reccomended songs
     const headers = new Headers();
     console.log("getSongs:");
+    console.log(happy);
     const {providerToken} = await getSpotifyToken();
     headers.append('Authorization', `Bearer ${providerToken}`);
-    console.log(`https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}`);
-    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical&seed_tracks=0c6xIDDpzE81m2q797ordA&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}`;
+    console.log(`https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${uplifting}`);
+    //const apiURL = `https://api.spotify.com/v1/recommendations?limit=10&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA&target_acousticness=${calm}&target_energy=${energetic}&target_loudness=${angry}&target_popularity=${uplifting}&target_speechiness=${sad}&target_valence=${happy}`;
+    const apiURL = `https://api.spotify.com/v1/recommendations?limit=10&seed_genres=pop%2Cdance%2Ccountry%2Calternative%2Cclassical&target_acousticness=${calm}&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}&target_speechiness=${sad}`;
+    //&target_popularity=${uplifting}`;
+    //&target_acousticness=${calm}`;
     const response = await fetch(apiURL, {
         method: 'GET',
         headers: headers,

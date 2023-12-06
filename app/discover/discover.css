@@ -8,6 +8,11 @@
     /*align-items: center;*/
 }
 
+.table {
+    background: white;
+    text-color: black;
+}
+
 .App-logo {
     height: 100px;
     width: 100px;
@@ -26,15 +31,18 @@
 
 .App-header {
     background: linear-gradient(to left, #9effa9, #48c46c);
-    /*min-height: 100vh;*/
     display: flex;
-    /*align-items: first;*/
+    align-content: center;
     text-align: left;
     justify-content: left;
     font-size: calc(10px + 2vmin);
     color: white;
     width: 100%;
     box-shadow: 0px 0px 10px 5px rgba(0, 0, 0, 0.3);
+}
+
+.left {
+    text-align: left;
 }
 
 .button {

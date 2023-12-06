@@ -1,5 +1,6 @@
 import {Table, Typography} from "@mui/joy";
 import {truncateString} from "@/lib/utils";
+//import "../discover/discover.css";
 
 interface TableProps {
     tracks: Track[];
@@ -9,7 +10,7 @@ const TrackTable = ({ tracks }: TableProps) => {
     return (
         <div>
             <Typography>Tracks</Typography>
-            <Table>
+            <Table style={{'background': 'white'}}>
                 <thead>
                 <tr>
                     <th>Song</th>

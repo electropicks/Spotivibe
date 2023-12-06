@@ -105,17 +105,13 @@ export default function Categories(
         const avgEnergetic = (parseInt(energetic) + userAverageSongVibes.energetic) / 2;
         const avgUplifting = (parseInt(uplifting) + userAverageSongVibes.uplifting) / 2;
         (Math.round(avgHappy / 100).toFixed(2));
-        const recTracks: Track[] = await getAiReccSongs((parseInt(Math.round(avgHappy / 100).toFixed(2))),
-            (Number(Math.round(avgSad / 100).toFixed(2))),
-            (Number(Math.round(avgAngry / 100).toFixed(2))),
-            (Number(Math.round(avgCalm/ 100).toFixed(2))),
-            (Number(Math.round(avgEnergetic / 100).toFixed(2))),
-            (Number(Math.round(avgUplifting / 100).toFixed(2))));
-        //getSongs(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
-
-        // Place holder to show functionality
-        //const taable = await generatePlaylist();
-        //setTable(taable);
+        console.log("EHHH" + (Math.round(avgSad / 100).toFixed(2)));
+        const recTracks: Track[] = await getAiReccSongs(Number((avgHappy /100.0).toFixed(2)),
+            Number((avgSad /100.0).toFixed(2)),
+            Number((avgAngry /100.0).toFixed(2)),
+            Number((avgCalm /100.0).toFixed(2)),
+            Number((avgEnergetic /100.0).toFixed(2)),
+            Number((avgUplifting/100.0).toFixed(2)));
 
         // Returns the playlist
         setTable(<TrackTable tracks={recTracks}></TrackTable>);
@@ -168,9 +164,10 @@ export default function Categories(
             <Button className="button" onClick={gen}>Submit</Button>
             {showPopup &&
                 (<Box className="box" id="results">
-                    <h2>Show results here</h2>
+                    <h2>Your Playlist: </h2>
                     {table}
                 </Box>)}
+            <br />
         </div>
     );
 }

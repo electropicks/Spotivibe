@@ -7,6 +7,14 @@ import {useRouter} from "next/navigation";
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Header from "../discover/header";
+import TrackTable from "@/components/TrackTable";
+import {
+    addSongsToTable,
+    getSongVibes,
+    getAiReccSongs,
+    getUserTopArtists,
+    getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
+} from "@/app/actions/actions";
 import "../discover/discover.css";
 //import LikertScale from 'likert-react';
 
@@ -24,6 +32,19 @@ export default function Categories(
     const [calm, setCalm] = useState("50");
     const [energetic, setEnergetic] = useState("50");
     const [uplifting, setUplifting] = useState("50");
+
+
+    // Slider weights in favor of user data
+    const [perHappy, setPerHappy] = useState("50");
+    const [perSad, setPerSad] = useState("50");
+    const [perAngry, setPerAngry] = useState("50");
+    const [perCalm, setPerCalm] = useState("50");
+    const [perEnergetic, setPerEnergetic] = useState("50");
+    const [perUplifting, setPerUplifting] = useState("50");
+
+
+    const [table, setTable] = useState(<></>);
+    const [topTracks, setTopTracks] = useState<Track[]>([]);
 
     // Feedback Parameters
     const [happyRes, setHappyRes] = useState(3);
@@ -57,7 +78,8 @@ export default function Categories(
 
         return (
             <form>
-                <p>How {type} did you find the playlist? </p>
+                <br />
+                <h3>How {type} did you find the playlist? </h3>
                 <br />
                 <label><input type="radio" name="myRadio" value="1" onClick={() => change(1)}/> Not {type} Enough</label>
                 <label><input type="radio" name="myRadio" value="2" onClick={() => change(2)}/> Could be more {type}</label>
@@ -68,27 +90,55 @@ export default function Categories(
         )
     }
 
-    const getRecc = () => {
-
-        // Same function as used in the discover page
-
-        return;
+    const getFeedback = (slider : number, user : number, result: number, setParam: (f : string)=>void, param: number) => {
+        switch (result){
+            case 1:
+                if (user < slider && param <= 80){
+                    setParam(String(param + 20));
+                } else if (user > slider && param >= 20){
+                    setParam(String(param - 20))
+                }
+                break;
+            case 2:
+                if (user < slider && param <= 90){
+                    setParam(String(param + 10));
+                } else if (user > slider && param >= 10){
+                    setParam(String(param - 10))
+                }
+                break;
+            case 3:
+                break;
+            case 4:
+                if (user > slider && param <= 90){
+                    setParam(String(param + 10));
+                } else if (user < slider && param >= 10){
+                    setParam(String(param - 10))
+                }
+                break;
+            case 5:
+                if (user > slider && param <= 80){
+                    setParam(String(param + 20));
+                } else if (user < slider && param >= 20){
+                    setParam(String(param - 20))
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     // This function adjusts weights based on feedback, so then the next reccomendation will be different
     // Adapts and learns
-    const evalFeedback = () => {
+    const evalFeedback = async () => {
 
-        // Perform this on each parameter/vibe : Four cases
-
-        // Case 1: Feedback leans towards the side of the user data
-        // Adjust average func to take in user params more than slider
-
-        // Case 2: Feedback leans towards slider
-
-        // Case 3: Feedback is less than both, lower initial value of parameter
-
-        // Case 4: Feedback is greater than both, raise initial value of parameter
+        const songVibes = await processSongs(topTracks);
+        const userAverageSongVibes: SongVibes = await getAverageVibesForUser(songVibes);
+        getFeedback(parseInt(happy), userAverageSongVibes.happy, happyRes, setPerHappy, parseInt(perHappy));
+        getFeedback(parseInt(sad), userAverageSongVibes.sad, sadRes, setPerSad, parseInt(perSad));
+        getFeedback(parseInt(angry), userAverageSongVibes.angry, angryRes, setPerAngry, parseInt(perAngry));
+        getFeedback(parseInt(calm), userAverageSongVibes.calm, calmRes, setPerCalm, parseInt(perCalm));
+        getFeedback(parseInt(energetic), userAverageSongVibes.energetic, energeticRes, setPerEnergetic, parseInt(perEnergetic));
+        getFeedback(parseInt(uplifting), userAverageSongVibes.uplifting, upliftingRes, setPerUplifting, parseInt(perUplifting));
 
         return;
     }
@@ -113,6 +163,43 @@ export default function Categories(
         setCategories(allCategories);
         setLoading(false)
     };
+
+    const gen = async() => {
+        // Activates pop up that shows the results
+        setShowPopup(true);
+
+        // use getAverageVibesPerUser functions
+        // shown that the user likes from the user data
+        const topTracks: Track[] = await getUserTopTracks(50, 'medium_term');
+        setTopTracks(topTracks);
+
+        const songVibes = await processSongs(topTracks);
+        const userAverageSongVibes: SongVibes = await getAverageVibesForUser(songVibes);
+
+        // // "Averages" the vibes put in through the sliders and the vibes
+        const avgHappy = ((parseInt(happy) * (parseInt(perHappy) / 100.0)) +
+            (userAverageSongVibes.happy * ((100 - parseInt(perHappy)) / 100.0))) / 2;
+        const avgSad = ((parseInt(sad) * (parseInt(perSad) / 100.0)) +
+            (userAverageSongVibes.sad * ((100 - parseInt(perSad)) / 100.0))) / 2;
+        const avgAngry = ((parseInt(angry) * (parseInt(perAngry) / 100.0)) +
+            (userAverageSongVibes.angry * ((100 - parseInt(perAngry)) / 100.0))) / 2;
+        const avgCalm = ((parseInt(calm) * (parseInt(perCalm) / 100.0)) +
+            (userAverageSongVibes.calm * ((100 - parseInt(perCalm)) / 100.0))) / 2;
+        const avgEnergetic = ((parseInt(energetic) * (parseInt(perEnergetic) / 100.0)) +
+            (userAverageSongVibes.energetic * ((100 - parseInt(perEnergetic)) / 100.0))) / 2;
+        const avgUplifting = ((parseInt(uplifting) * (parseInt(perUplifting) / 100.0)) +
+            (userAverageSongVibes.uplifting * ((100 - parseInt(perUplifting)) / 100.0))) / 2;
+        const recTracks: Track[] = await getAiReccSongs(Number((avgHappy /100.0).toFixed(2)),
+            Number((avgSad /100.0).toFixed(2)),
+            Number((avgAngry /100.0).toFixed(2)),
+            Number((avgCalm /100.0).toFixed(2)),
+            Number((avgEnergetic /100.0).toFixed(2)),
+            Number((avgUplifting/100.0).toFixed(2)));
+
+        // Returns the playlist
+        setTable(<TrackTable tracks={recTracks}></TrackTable>);
+        return (<TrackTable tracks={recTracks}></TrackTable>);
+    }
 
     return (
         <div className="App">
@@ -157,14 +244,15 @@ export default function Categories(
                 <Grid container spacing={2} >
                 </Grid>
             </Box>
-            <Button onClick={() => setShowPopup(true)} className="button">Submit</Button>
+            <Button onClick={gen} className="button">Submit</Button>
             {showPopup &&
                 (<div>
                     <Box className="box" id="results">
-                        <h2>Show results here</h2>
+                        <h2>Your Playlist</h2>
+                        {table}
                     </Box>
                     <Box className="box">
-                        <h2>Tell us how you think we did:</h2>
+                        <h2 className="left">Tell us how you think we did:</h2>
                         {likertScale("happy", setHappyRes)}
                         {likertScale("sad", setSadRes)}
                         {likertScale("angry", setAngryRes)}
@@ -174,5 +262,6 @@ export default function Categories(
                     </Box>
                     <Button className="button" onClick={evalFeedback}>Submit</Button>
                 </div>)}
+            <br />
         </div>)
 }
