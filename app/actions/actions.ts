@@ -21,7 +21,7 @@ energetic: number, uplifting: number){
     const {providerToken} = await getSpotifyToken();
     headers.append('Authorization', `Bearer ${providerToken}`);
     console.log(`https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}`);
-    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&target_energy=0.5&target_loudness=0.5&target_valence=1`;
+    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical&seed_tracks=0c6xIDDpzE81m2q797ordA&target_energy=0.5&target_loudness=0.5&target_valence=1`;
     const response = await fetch(apiURL, {
         method: 'GET',
         headers: headers,
