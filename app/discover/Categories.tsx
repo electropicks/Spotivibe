@@ -91,7 +91,7 @@ export default function Categories(
 
         // use getAverageVibesPerUser functions
         // shown that the user likes from the user data
-        const topTracks: Track[] = await getUserTopTracks(50, 'medium');
+        const topTracks: Track[] = await getUserTopTracks(50, 'medium_term');
         setTopTracks(topTracks);
 
         const songVibes = await processSongs(topTracks);
@@ -104,8 +104,13 @@ export default function Categories(
         const avgCalm = (parseInt(calm) + userAverageSongVibes.calm) / 2;
         const avgEnergetic = (parseInt(energetic) + userAverageSongVibes.energetic) / 2;
         const avgUplifting = (parseInt(uplifting) + userAverageSongVibes.uplifting) / 2;
-
-        const recTracks: Track[] = await getSongs(avgHappy/100, avgSad/100, avgAngry/100, avgCalm/100, avgEnergetic/100, avgUplifting/100);
+        (Math.round(avgHappy / 100).toFixed(2));
+        const recTracks: Track[] = await getSongs((parseInt(Math.round(avgHappy / 100).toFixed(2))),
+            (Number(Math.round(avgSad / 100).toFixed(2))),
+            (Number(Math.round(avgAngry / 100).toFixed(2))),
+            (Number(Math.round(avgCalm/ 100).toFixed(2))),
+            (Number(Math.round(avgEnergetic / 100).toFixed(2))),
+            (Number(Math.round(avgUplifting / 100).toFixed(2))));
         //getSongs(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
 
         // Place holder to show functionality

@@ -17,9 +17,11 @@ energetic: number, uplifting: number){
 
     // Call to spotify API to get reccomended songs
     const headers = new Headers();
+    console.log("getSongs:");
     const {providerToken} = await getSpotifyToken();
     headers.append('Authorization', `Bearer ${providerToken}`);
-    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}`;
+    console.log(`https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}`);
+    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&target_energy=0.5&target_loudness=0.5&target_valence=1`;
     const response = await fetch(apiURL, {
         method: 'GET',
         headers: headers,
@@ -253,6 +255,7 @@ export async function getUserTopTracks(limit: number, time_range: string) {
     const {providerToken} = await getSpotifyToken();
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${providerToken}`);
+    console.log(providerToken);
     const params = new URLSearchParams();
     params.append('limit', limit.toString());
     params.append('time_range', time_range);
