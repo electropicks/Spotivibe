@@ -12,7 +12,7 @@ import TrackTable from "@/components/TrackTable";
 import {
     addSongsToTable,
     getSongVibes,
-    getSongs,
+    getAiReccSongs,
     getUserTopArtists,
     getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
 } from "@/app/actions/actions";
@@ -105,7 +105,7 @@ export default function Categories(
         const avgEnergetic = (parseInt(energetic) + userAverageSongVibes.energetic) / 2;
         const avgUplifting = (parseInt(uplifting) + userAverageSongVibes.uplifting) / 2;
         (Math.round(avgHappy / 100).toFixed(2));
-        const recTracks: Track[] = await getSongs((parseInt(Math.round(avgHappy / 100).toFixed(2))),
+        const recTracks: Track[] = await getAiReccSongs((parseInt(Math.round(avgHappy / 100).toFixed(2))),
             (Number(Math.round(avgSad / 100).toFixed(2))),
             (Number(Math.round(avgAngry / 100).toFixed(2))),
             (Number(Math.round(avgCalm/ 100).toFixed(2))),

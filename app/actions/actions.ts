@@ -12,7 +12,7 @@ import {backOff} from "exponential-backoff";
 
 const openai = new OpenAI();
 
-export async function getSongs(happy: number, sad: number, angry: number, calm: number,
+export async function getAiReccSongs(happy: number, sad: number, angry: number, calm: number,
 energetic: number, uplifting: number){
 
     // Call to spotify API to get reccomended songs
