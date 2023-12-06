@@ -19,7 +19,7 @@ energetic: number, uplifting: number){
     const headers = new Headers();
     const {providerToken} = await getSpotifyToken();
     headers.append('Authorization', `Bearer ${providerToken}`);
-    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&min_energy=${energetic}&max_energy=0.8`;
+    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}`;
     const response = await fetch(apiURL, {
         method: 'GET',
         headers: headers,

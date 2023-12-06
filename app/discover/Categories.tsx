@@ -112,17 +112,8 @@ export default function Categories(
         //const taable = await generatePlaylist();
         //setTable(taable);
 
-        // Generates playlist with a range from those given parameters
-        // E.X. avgHappy = .5, thus pull songs .4 - .6 happy etc
-
-
-        // Evaluates if playist is too long or too short,
-        // If its too long, tighten the range and try again
-        // If its too short, expand the range and try again
-
         // Returns the playlist
-        // currently just uses the get track feature
-        return;
+        return (<TrackTable tracks={recTracks}></TrackTable>);
     }
 
     return (
