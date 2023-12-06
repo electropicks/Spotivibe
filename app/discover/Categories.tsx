@@ -12,6 +12,7 @@ import TrackTable from "@/components/TrackTable";
 import {
     addSongsToTable,
     getSongVibes,
+    getSongs,
     getUserTopArtists,
     getUserTopTracks, mergeTrackFeatures, addSongVibesToTable, pruneCachedSongs, getAverageVibesForUser, processSongs
 } from "@/app/actions/actions";
@@ -92,18 +93,24 @@ export default function Categories(
         // shown that the user likes from the user data
         const topTracks: Track[] = await getUserTopTracks(50, 'medium');
         setTopTracks(topTracks);
+
         const songVibes = await processSongs(topTracks);
         const userAverageSongVibes: SongVibes = await getAverageVibesForUser(songVibes);
-
-        // "Averages" the vibes put in through the sliders and the vibes
+        
+        // // "Averages" the vibes put in through the sliders and the vibes
         const avgHappy = (parseInt(happy) + userAverageSongVibes.happy) / 2;
-        const avgSad = (parseInt(sad) + userAverageSongVibes.sad) / 2;;
-        const avgAngry = (parseInt(angry) + userAverageSongVibes.angry) / 2;;
-        const avgCalm = (parseInt(calm) + userAverageSongVibes.calm) / 2;;
-        const avgEnergetic = (parseInt(energetic) + userAverageSongVibes.energetic) / 2;;
-        const avgUplifting = (parseInt(uplifting) + userAverageSongVibes.uplifting) / 2;;
-        const taable = await generatePlaylist();
-        setTable(taable);
+        const avgSad = (parseInt(sad) + userAverageSongVibes.sad) / 2;
+        const avgAngry = (parseInt(angry) + userAverageSongVibes.angry) / 2;
+        const avgCalm = (parseInt(calm) + userAverageSongVibes.calm) / 2;
+        const avgEnergetic = (parseInt(energetic) + userAverageSongVibes.energetic) / 2;
+        const avgUplifting = (parseInt(uplifting) + userAverageSongVibes.uplifting) / 2;
+
+        const recTracks: Track[] = await getSongs(avgHappy/100, avgSad/100, avgAngry/100, avgCalm/100, avgEnergetic/100, avgUplifting/100);
+        //getSongs(0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
+
+        // Place holder to show functionality
+        //const taable = await generatePlaylist();
+        //setTable(taable);
 
         // Generates playlist with a range from those given parameters
         // E.X. avgHappy = .5, thus pull songs .4 - .6 happy etc

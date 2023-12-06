@@ -12,6 +12,30 @@ import {backOff} from "exponential-backoff";
 
 const openai = new OpenAI();
 
+export async function getSongs(happy: number, sad: number, angry: number, calm: number,
+energetic: number, uplifting: number){
+
+    // Call to spotify API to get reccomended songs
+    const headers = new Headers();
+    const {providerToken} = await getSpotifyToken();
+    headers.append('Authorization', `Bearer ${providerToken}`);
+    const apiURL = `https://api.spotify.com/v1/recommendations?limit=5&min_energy=${energetic}&max_energy=0.8`;
+    const response = await fetch(apiURL, {
+        method: 'GET',
+        headers: headers,
+    })
+    if (response.status === 401) {
+        redirect('/login')
+    }
+    if (response.status === 400) {
+        console.log(response)
+        redirect('/logout')
+    }
+    const featuresResponse = await response.json();
+    console.log(featuresResponse);
+    return featuresResponse;
+}
+
 export async function processSongs(tracks: Track[]) {
     if (!tracks || tracks.length === 0) {
         return [];
