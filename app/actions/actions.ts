@@ -12,6 +12,36 @@ import {backOff} from "exponential-backoff";
 
 const openai = new OpenAI();
 
+export async function getAiReccSongs(happy: number, sad: number, angry: number, calm: number,
+energetic: number, uplifting: number){
+
+    // Call to spotify API to get reccomended songs
+    const headers = new Headers();
+    console.log("getSongs:");
+    console.log(happy);
+    const {providerToken} = await getSpotifyToken();
+    headers.append('Authorization', `Bearer ${providerToken}`);
+    console.log(`https://api.spotify.com/v1/recommendations?limit=5&target_energy=${energetic}&target_loudness=${angry}&target_valence=${uplifting}`);
+    //const apiURL = `https://api.spotify.com/v1/recommendations?limit=10&seed_artists=4NHQUGzhtTLFvgF5SZesLK&seed_genres=classical%2Ccountry&seed_tracks=0c6xIDDpzE81m2q797ordA&target_acousticness=${calm}&target_energy=${energetic}&target_loudness=${angry}&target_popularity=${uplifting}&target_speechiness=${sad}&target_valence=${happy}`;
+    const apiURL = `https://api.spotify.com/v1/recommendations?limit=10&seed_genres=pop%2Cdance%2Ccountry%2Calternative%2Cclassical&target_acousticness=${calm}&target_energy=${energetic}&target_loudness=${angry}&target_valence=${happy}&target_speechiness=${sad}`;
+    //&target_popularity=${uplifting}`;
+    //&target_acousticness=${calm}`;
+    const response = await fetch(apiURL, {
+        method: 'GET',
+        headers: headers,
+    })
+    if (response.status === 401) {
+        redirect('/login')
+    }
+    if (response.status === 400) {
+        console.log(response)
+        redirect('/logout')
+    }
+    const featuresResponse = await response.json();
+    console.log(featuresResponse);
+    return featuresResponse.tracks;
+}
+
 export async function processSongs(tracks: Track[]) {
     if (!tracks || tracks.length === 0) {
         return [];
@@ -229,6 +259,7 @@ export async function getUserTopTracks(limit: number, time_range: string) {
     const {providerToken} = await getSpotifyToken();
     const headers = new Headers();
     headers.append('Authorization', `Bearer ${providerToken}`);
+    console.log(providerToken);
     const params = new URLSearchParams();
     params.append('limit', limit.toString());
     params.append('time_range', time_range);
