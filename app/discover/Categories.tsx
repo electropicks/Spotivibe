@@ -118,6 +118,7 @@ export default function Categories(
         //setTable(taable);
 
         // Returns the playlist
+        setTable(<TrackTable tracks={recTracks}></TrackTable>);
         return (<TrackTable tracks={recTracks}></TrackTable>);
     }
 
