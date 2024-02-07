@@ -24,7 +24,7 @@ export async function processSongs(tracks: Track[]) {
     const vibedTracks = await mergeTrackFeatures(tracks);
     const [uncachedTracks, cachedTracks] = await pruneCachedSongs(vibedTracks);
     const getVibesResponse = await supabase
-        .from('song_vibes')
+        .from('song_vibe')
         .select('*')
         .in('spotify_id', cachedTracks.map(track => track.id));
     const cachedVibes = (getVibesResponse.data! ?? []) as SongVibes[];
@@ -148,7 +148,7 @@ export async function pruneCachedSongs(tracks: VibedTrack[]) {
 
     // Using a single query to get all the cached songs corresponding to the tracks
     const { data: filteredSongs, error } = await supabase
-        .from('song_vibes')
+        .from('song_vibe')
         .select('spotify_id')
         .in('spotify_id', spotifyIds);  // Filtering based on spotify_ids
 
@@ -319,9 +319,9 @@ export async function addSongsToTable(songs: VibedTrack[]) {
     console.log("Adding songs to table");
     const supabase = createServerActionClient<Database>({cookies: () => cookies()});
 
-    // Insert into song_features and retrieve inserted ids
+    // Insert into song_feature and retrieve inserted ids
     const { data: featuresData, error: error1 } = await supabase
-        .from('song_features')
+        .from('song_feature')
         .upsert(songs.map(song => ({
             acousticness: song.acousticness,
             danceability: song.danceability,
@@ -349,14 +349,14 @@ export async function addSongsToTable(songs: VibedTrack[]) {
         return; // handle the error appropriately
     }
 
-    // Prepare song data with song_features_id
+    // Prepare song data with song_feature_id
     const songDataUpload= songs.map(song => {
         const featureId = featuresData.find(f => f.spotify_id === song.id)?.id;
         return {
             name: song.name,
             artist: song.artists[0].name, // Assuming the first artist's name
             album: song.album.name, // Assuming 'album' has a 'name' property
-            song_features_id: featureId,
+            song_feature_id: featureId,
             spotify_id: song.id // Again, assuming 'id' is the Spotify ID
         };
     });
@@ -368,7 +368,7 @@ export async function addSongsToTable(songs: VibedTrack[]) {
 
     if (error2) {
         console.error(error2);
-        // Handle error - consider rolling back song_features insertion if necessary
+        // Handle error - consider rolling back song_feature insertion if necessary
     }
 
     console.log("Successfully added songs to table");
@@ -386,9 +386,9 @@ export async function addSongVibesToTable(songs: (SongVibes)[]) {
         .from('song')
         .select('id, spotify_id');
 
-    // Add song analysis to song_vibes table
+    // Add song analysis to song_vibe table
     const { error } = await supabase
-        .from('song_vibes')
+        .from('song_vibe')
         .upsert(songs.map(song => ({
             name: song.name,
             spotify_id: song.spotify_id,
